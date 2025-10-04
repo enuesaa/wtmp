@@ -6,9 +6,15 @@ A CLI tool to manage tmp dirs for throwaway work. ***work in tmp dirs***
 ```bash
 # start session
 wtmp
-wtmp -t <name>
+
+# exit
+exit
 
 wtmp last
-wtmp history
 wtmp clear
+
+wtmp sh
 ```
+
+## TODO
+- アセットを export するには。
