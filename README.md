@@ -18,3 +18,9 @@ wtmp sh
 
 ## TODO
 - アセットを export するには。
+
+## Commands
+```bash
+zig build run
+zig build test
+```
