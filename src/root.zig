@@ -22,12 +22,7 @@ pub fn mkdir() !void {
 
 pub fn isDirExists() bool {
     const cwd = std.fs.cwd();
-    if (cwd.access("a", .{})) |_| {
-        return true;
-    } else |err| switch (err) {
-        error.FileNotFound => return false,
-        else => return false,
-    }
+    return if (cwd.access("a", .{})) |_| true else |_| false;
 }
 
 pub fn add(a: i32, b: i32) i32 {
