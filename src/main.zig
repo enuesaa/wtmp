@@ -3,6 +3,9 @@ const wtmp = @import("wtmp");
 
 pub fn main() !void {
     std.debug.print("hello {s}.\n", .{"hello"});
-    try wtmp.bufferedPrint();
     try wtmp.mkdir();
+
+    if (wtmp.isDirExists()) {
+        std.debug.print("dir exists\n", .{});
+    }
 }
