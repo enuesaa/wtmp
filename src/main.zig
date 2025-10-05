@@ -8,4 +8,6 @@ pub fn main() !void {
     if (wtmp.isDirExists()) {
         std.debug.print("dir exists\n", .{});
     }
+
+    // try wtmp.shell();
 }
