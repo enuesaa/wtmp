@@ -21,22 +21,10 @@ pub fn shell() !void {
 
     const argv = &[_][]const u8{"zsh"};
     var child = std.process.Child.init(argv, alloc);
-    // defer child.deinit();
 
-    // try child.setExecutable("/bin/zsh", &[_][]const u8{"zsh"});
-
-    // var env_list = try std.ArrayList([]const u8).init(alloc);
-    // defer env_list.deinit();
-    // var env_iter = std.os.environ();
-    // while (env_iter.next()) |env| {
-    //     try env_list.append(env.?);
-    // }
-    // try env_list.append("MYVAR=hello");
-    // try child.setEnv(env_list.toOwnedSlice());
-
-    // child.stdout = .Inherit;
-    // child.stderr = .Inherit;
-    // , .Inherit, .Inherit);
+    var env_map = try std.process.getEnvMap(alloc);
+    try env_map.put("AAA", "bbb");
+    child.env_map = &env_map;
 
     const exit_code = try child.spawnAndWait();
     std.debug.print("Exit code: {}\n", .{exit_code});
