@@ -22,6 +22,11 @@ pub fn shell() !void {
     const argv = &[_][]const u8{"zsh"};
     var child = std.process.Child.init(argv, alloc);
 
+    const cwd = std.fs.cwd();
+
+    const launchdir = try cwd.openDir("src", .{}); // ここに絶対パスを指定可能 (/Users/aaa/tmp)
+    child.cwd_dir = launchdir;
+
     var env_map = try std.process.getEnvMap(alloc);
     try env_map.put("AAA", "bbb");
     child.env_map = &env_map;
