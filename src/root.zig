@@ -9,6 +9,17 @@ pub fn bufferedPrint() !void {
     try stdout.flush();
 }
 
+pub fn mkdir() !void {
+    const cwd = std.fs.cwd();
+
+    const alloc = std.heap.page_allocator;
+    // see https://stackoverflow.com/questions/72709702/how-do-i-get-the-full-path-of-a-std-fs-dir
+    const cwdpath = try cwd.realpathAlloc(alloc, ".");
+    std.debug.print("cwd: {s}\n", .{cwdpath});
+
+    try cwd.makeDir("testdir");
+}
+
 pub fn add(a: i32, b: i32) i32 {
     return a + b;
 }
