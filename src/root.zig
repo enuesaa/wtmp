@@ -1,19 +1,27 @@
 const std = @import("std");
 
+// see https://stackoverflow.com/questions/72709702/how-do-i-get-the-full-path-of-a-std-fs-dir
 pub fn mkdir() !void {
-    const cwd = std.fs.cwd();
+    if (isDirExists()) return;
 
+    const cwd = std.fs.cwd();
     const alloc = std.heap.page_allocator;
-    // see https://stackoverflow.com/questions/72709702/how-do-i-get-the-full-path-of-a-std-fs-dir
     const cwdpath = try cwd.realpathAlloc(alloc, ".");
     std.debug.print("cwd: {s}\n", .{cwdpath});
 
     try cwd.makeDir("testdir");
 }
 
-pub fn isDirExists() bool {
+fn isDirExists() bool {
     const cwd = std.fs.cwd();
-    return if (cwd.access("a", .{})) |_| true else |_| false;
+    return if (cwd.access("testdir", .{})) |_| true else |_| false;
+}
+
+pub fn rmdir() !void {
+    if (!isDirExists()) return;
+
+    const cwd = std.fs.cwd();
+    try cwd.deleteDir("testdir");
 }
 
 pub fn shell() !void {
@@ -35,10 +43,9 @@ pub fn shell() !void {
     std.debug.print("Exit code: {}\n", .{exit_code});
 }
 
-pub fn add(a: i32, b: i32) i32 {
-    return a + b;
-}
-
-test "basic add functionality" {
-    try std.testing.expect(add(3, 7) == 10);
-}
+// pub fn add(a: i32, b: i32) i32 {
+//     return a + b;
+// }
+// test "basic add functionality" {
+//     try std.testing.expect(add(3, 7) == 10);
+// }
