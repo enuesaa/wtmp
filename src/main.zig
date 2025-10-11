@@ -16,40 +16,39 @@ const wtmp = @import("wtmp");
 
 const cli = @import("cli");
 
-var config = struct {
-    host: []const u8 = "localhost",
-    port: u16 = undefined,
-}{};
-
 pub fn main() !void {
     var r = try cli.AppRunner.init(std.heap.page_allocator);
 
     const app = cli.App{
         .command = cli.Command{
-            .name = "short",
-            .options = try r.allocOptions(&.{
-                .{
-                    .long_name = "host",
-                    .help = "host to listen on",
-                    .value_ref = r.mkRef(&config.host),
-                },
-                .{
-                    .long_name = "port",
-                    .help = "port to bind to",
-                    .required = true,
-                    .value_ref = r.mkRef(&config.port),
-                },
-            }),
+            .name = "wtmp",
             .target = cli.CommandTarget{
-                .action = cli.CommandAction{
-                    .exec = dd,
-                },
+                // .action = cli.CommandAction{
+                //     .exec = handle_main,
+                // },
+                .subcommands = try r.allocCommands(&.{
+                    cli.Command{
+                        .name = "ls",
+                        .description = cli.Description{
+                            .one_line = "ls command",
+                        },
+                        .target = cli.CommandTarget{
+                            .action = cli.CommandAction{
+                                .exec = handle_ls,
+                            },
+                        },
+                    },
+                }),
             },
         },
     };
     return r.run(&app);
 }
 
-fn dd() !void {
-    std.log.debug("dd", .{});
+fn handle_main() !void {
+    std.log.debug("main", .{});
+}
+
+fn handle_ls() !void {
+    std.log.debug("ls", .{});
 }
