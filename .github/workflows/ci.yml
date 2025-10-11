@@ -31,4 +31,4 @@ jobs:
       - run: tree zig-out
 
       # run
-      # - run: ./zig-out/x86_64-linux-gnu/wtmp
+      - run: ./zig-out/x86_64-linux-gnu/wtmp --help
