@@ -42,10 +42,3 @@ pub fn shell() !void {
     const exit_code = try child.spawnAndWait();
     std.debug.print("Exit code: {}\n", .{exit_code});
 }
-
-// pub fn add(a: i32, b: i32) i32 {
-//     return a + b;
-// }
-// test "basic add functionality" {
-//     try std.testing.expect(add(3, 7) == 10);
-// }
