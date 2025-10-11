@@ -4,6 +4,12 @@ pub fn build(b: *std.Build) void {
     const target = b.standardTargetOptions(.{});
     const optimize = b.standardOptimizeOption(.{});
 
+    // deps
+    const zigcli = b.dependency("cli", .{
+        .target = target,
+        .optimize = optimize,
+    });
+
     // mod
     const mod = b.addModule("wtmp", .{
         .root_source_file = b.path("src/root.zig"),
@@ -17,6 +23,7 @@ pub fn build(b: *std.Build) void {
             .optimize = optimize,
             .imports = &.{
                 .{ .name = "wtmp", .module = mod },
+                .{ .name = "cli", .module = zigcli.module("cli") },
             },
         }),
     });
