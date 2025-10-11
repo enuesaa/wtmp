@@ -17,15 +17,20 @@ const wtmp = @import("wtmp");
 const cli = @import("cli");
 
 pub fn main() !void {
+    const args = try std.process.argsAlloc(std.heap.page_allocator);
+    defer std.process.argsFree(std.heap.page_allocator, args);
+
+    if (args.len == 1) {
+        // NOTE: first argument is the binary name like `wtmp`
+        std.log.debug("main", .{});
+        return;
+    }
     var r = try cli.AppRunner.init(std.heap.page_allocator);
 
     const app = cli.App{
         .command = cli.Command{
             .name = "wtmp",
             .target = cli.CommandTarget{
-                // .action = cli.CommandAction{
-                //     .exec = handle_main,
-                // },
                 .subcommands = try r.allocCommands(&.{
                     cli.Command{
                         .name = "ls",
@@ -43,10 +48,6 @@ pub fn main() !void {
         },
     };
     return r.run(&app);
-}
-
-fn handle_main() !void {
-    std.log.debug("main", .{});
 }
 
 fn handle_ls() !void {
