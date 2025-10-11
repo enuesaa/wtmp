@@ -46,6 +46,10 @@ const Model = struct {
                     }
                     return ctx.consumeAndRedraw();
                 }
+                if (key.codepoint == vaxis.Key.enter) {
+                    ctx.quit = true;
+                    return;
+                }
             },
             else => {},
         }
@@ -56,6 +60,7 @@ const Model = struct {
 
         self.lhs.text = try Model.buildMenuText(ptr, ctx);
         self.split.lhs = self.lhs.widget();
+        self.rhs.text = try std.fmt.allocPrint(ctx.arena, "  right {s}\n", .{self.menu[self.selected]});
         self.split.rhs = self.rhs.widget();
 
         self.children[0] = .{
@@ -86,7 +91,7 @@ const Model = struct {
     }
 };
 
-pub fn handle() !void {
+fn launch() !void {
     var gpa = std.heap.GeneralPurposeAllocator(.{}){};
     defer _ = gpa.deinit();
     const allocator = gpa.allocator();
@@ -98,9 +103,16 @@ pub fn handle() !void {
     defer allocator.destroy(model);
 
     model.* = .{
-        .lhs = .{ .text = "Left side" },
-        .rhs = .{ .text = "right side" },
+        .lhs = .{ .text = "" },
+        .rhs = .{ .text = "  right" },
         .split = .{ .lhs = undefined, .rhs = undefined, .width = 20 },
     };
     try app.run(model.widget(), .{});
+}
+
+pub fn handle() !void {
+    launch() catch |e| {
+        std.debug.print("run error: {}\n", .{e});
+    };
+    std.debug.print("a", .{});
 }
