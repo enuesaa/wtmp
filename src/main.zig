@@ -1,28 +1,22 @@
 const std = @import("std");
 const wtmp = @import("wtmp");
-
-// pub fn main() !void {
-//     std.debug.print("start\n", .{});
-
-//     // create tmp dir here
-//     try wtmp.mkdir();
-
-//     // start shell
-//     try wtmp.shell();
-
-//     // delete tmp dir here
-//     try wtmp.rmdir();
-// }
-
 const cli = @import("cli");
 
 pub fn main() !void {
     const args = try std.process.argsAlloc(std.heap.page_allocator);
     defer std.process.argsFree(std.heap.page_allocator, args);
 
+    // NOTE: first argument is the binary name like `wtmp`
     if (args.len == 1) {
-        // NOTE: first argument is the binary name like `wtmp`
-        std.log.debug("main", .{});
+        std.log.debug("start new tmp", .{});
+        // create tmp dir here
+        try wtmp.mkdir();
+
+        // start shell
+        try wtmp.shell();
+
+        // delete tmp dir here
+        try wtmp.rmdir();
         return;
     }
     var r = try cli.AppRunner.init(std.heap.page_allocator);
@@ -39,7 +33,7 @@ pub fn main() !void {
                         },
                         .target = cli.CommandTarget{
                             .action = cli.CommandAction{
-                                .exec = handle_ls,
+                                .exec = wtmp.ls,
                             },
                         },
                     },
@@ -48,8 +42,4 @@ pub fn main() !void {
         },
     };
     return r.run(&app);
-}
-
-fn handle_ls() !void {
-    std.log.debug("ls", .{});
 }
