@@ -42,7 +42,3 @@ pub fn shell() !void {
     const exit_code = try child.spawnAndWait();
     std.debug.print("Exit code: {}\n", .{exit_code});
 }
-
-pub fn ls() !void {
-    std.log.debug("ls", .{});
-}
