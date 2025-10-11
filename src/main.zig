@@ -34,7 +34,7 @@ pub fn main() !void {
                         },
                         .target = cli.CommandTarget{
                             .action = cli.CommandAction{
-                                .exec = ls.counter,
+                                .exec = ls.handle,
                             },
                         },
                     },

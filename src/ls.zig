@@ -3,8 +3,11 @@ const vaxis = @import("vaxis");
 const vxfw = vaxis.vxfw;
 
 const Model = struct {
+    split: vxfw.SplitView,
+    lhs: vxfw.Text,
+    rhs: vxfw.Text,
+    children: [1]vxfw.SubSurface = undefined,
     count: u32 = 0,
-    button: vxfw.Button,
 
     pub fn widget(self: *Model) vxfw.Widget {
         return .{
@@ -17,11 +20,18 @@ const Model = struct {
     fn eventHandler(ptr: *anyopaque, ctx: *vxfw.EventContext, event: vxfw.Event) anyerror!void {
         const self: *Model = @ptrCast(@alignCast(ptr));
         switch (event) {
-            .init => return ctx.requestFocus(self.button.widget()),
+            .init => {
+                self.split.lhs = self.lhs.widget();
+                self.split.rhs = self.rhs.widget();
+            },
             .key_press => |key| {
                 if (key.matches('c', .{ .ctrl = true })) {
                     ctx.quit = true;
                     return;
+                }
+                if (key.matches('a', .{})) {
+                    self.count +|= 1;
+                    return ctx.consumeAndRedraw();
                 }
             },
             else => {},
@@ -30,42 +40,23 @@ const Model = struct {
 
     fn drawFn(ptr: *anyopaque, ctx: vxfw.DrawContext) std.mem.Allocator.Error!vxfw.Surface {
         const self: *Model = @ptrCast(@alignCast(ptr));
-        const max_size = ctx.max.size();
+        self.lhs.text = try std.fmt.allocPrint(ctx.arena, "Clicks: {d}", .{self.count});
 
-        if (self.count > 0) {
-            self.button.label = try std.fmt.allocPrint(ctx.arena, "Clicks: {d}", .{self.count});
-        } else {
-            self.button.label = "Click!";
-        }
-
-        const button_child: vxfw.SubSurface = .{
-            .origin = .{ .row = 10, .col = 20 },
-            .surface = try self.button.draw(ctx.withConstraints(
-                ctx.min,
-                .{ .width = 30, .height = 5 },
-            )),
+        self.children[0] = .{
+            .origin = .{ .row = 1, .col = 1 },
+            .surface = try self.split.widget().draw(ctx),
         };
-
-        const children = try ctx.arena.alloc(vxfw.SubSurface, 1);
-        children[0] = button_child;
 
         return .{
-            .size = max_size,
+            .size = ctx.max.size(),
             .widget = self.widget(),
             .buffer = &.{},
-            .children = children,
+            .children = &self.children,
         };
-    }
-
-    fn onClick(maybe_ptr: ?*anyopaque, ctx: *vxfw.EventContext) anyerror!void {
-        const ptr = maybe_ptr orelse return;
-        const self: *Model = @ptrCast(@alignCast(ptr));
-        self.count +|= 1;
-        return ctx.consumeAndRedraw();
     }
 };
 
-pub fn counter() !void {
+pub fn handle() !void {
     var gpa = std.heap.GeneralPurposeAllocator(.{}){};
     defer _ = gpa.deinit();
     const allocator = gpa.allocator();
@@ -77,12 +68,12 @@ pub fn counter() !void {
     defer allocator.destroy(model);
 
     model.* = .{
-        .count = 0,
-        .button = .{
-            .label = "Click!",
-            .onClick = Model.onClick,
-            .userdata = model,
-        },
+        .lhs = .{ .text = "Left side" },
+        .rhs = .{ .text = "right side" },
+        .split = .{ .lhs = undefined, .rhs = undefined, .width = 20 },
     };
+    model.split.lhs = model.lhs.widget();
+    model.split.rhs = model.rhs.widget();
+
     try app.run(model.widget(), .{});
 }
