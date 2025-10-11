@@ -91,7 +91,7 @@ const Model = struct {
     }
 };
 
-fn launch() !void {
+fn launch() ![]const u8 {
     var gpa = std.heap.GeneralPurposeAllocator(.{}){};
     defer _ = gpa.deinit();
     const allocator = gpa.allocator();
@@ -108,11 +108,11 @@ fn launch() !void {
         .split = .{ .lhs = undefined, .rhs = undefined, .width = 20 },
     };
     try app.run(model.widget(), .{});
+
+    return model.menu[model.selected];
 }
 
 pub fn handle() !void {
-    launch() catch |e| {
-        std.debug.print("run error: {}\n", .{e});
-    };
-    std.debug.print("a", .{});
+    const selected = try launch();
+    std.debug.print("selected: {s}\n", .{selected});
 }
