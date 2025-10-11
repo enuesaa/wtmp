@@ -9,6 +9,10 @@ pub fn build(b: *std.Build) void {
         .target = target,
         .optimize = optimize,
     });
+    const vaxis = b.dependency("vaxis", .{
+        .target = target,
+        .optimize = optimize,
+    });
 
     // mod
     const mod = b.addModule("wtmp", .{
@@ -24,6 +28,7 @@ pub fn build(b: *std.Build) void {
             .imports = &.{
                 .{ .name = "wtmp", .module = mod },
                 .{ .name = "cli", .module = zigcli.module("cli") },
+                .{ .name = "vaxis", .module = vaxis.module("vaxis") },
             },
         }),
     });

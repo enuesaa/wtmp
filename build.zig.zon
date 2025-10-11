@@ -8,6 +8,10 @@
             .url = "git+https://github.com/sam701/zig-cli?ref=zig-0.15#cb44aade25a3c1eddd8b6f990b50c2189442c1e2",
             .hash = "cli-0.10.0-2eKe_5kEAQBeHqKxUHNTGnETzu81rqKWwT1WPt1jXBt0",
         },
+        .vaxis = .{
+            .url = "git+https://github.com/rockorager/libvaxis.git?ref=zig-0.15#9e48a93c4d312cb09827b10e858f99750bd6df10",
+            .hash = "vaxis-0.5.1-BWNV_G8dCQAlqGImRA8VWpnnGXwzbE2aQiIGcqZew6Gj",
+        },
     },
     .paths = .{
         "build.zig",
