@@ -3,12 +3,11 @@ const vaxis = @import("vaxis");
 const vxfw = vaxis.vxfw;
 
 const Model = struct {
-    allocator: std.mem.Allocator,
     split: vxfw.SplitView,
     lhs: vxfw.Text,
     rhs: vxfw.Text,
     children: [1]vxfw.SubSurface = undefined,
-    menuItems: [3][]const u8 = [_][]const u8{ "top", "second", "third" },
+    menu: [3][]const u8 = [_][]const u8{ "top", "second", "third" },
     selected: u32 = 0,
 
     pub fn widget(self: *Model) vxfw.Widget {
@@ -42,7 +41,7 @@ const Model = struct {
                     return ctx.consumeAndRedraw();
                 }
                 if (key.codepoint == vaxis.Key.down) {
-                    if (self.selected + 1 < self.menuItems.len) {
+                    if (self.selected + 1 < self.menu.len) {
                         self.selected +|= 1;
                     }
                     return ctx.consumeAndRedraw();
@@ -55,14 +54,7 @@ const Model = struct {
     fn drawFn(ptr: *anyopaque, ctx: vxfw.DrawContext) !vxfw.Surface {
         const self: *Model = @ptrCast(@alignCast(ptr));
 
-        self.lhs.text = try std.fmt.allocPrint(ctx.arena, "{s}{s}\n{s}{s}\n{s}{s}\n", .{
-            if (self.selected == 0) "> " else "  ",
-            self.menuItems[0],
-            if (self.selected == 1) "> " else "  ",
-            self.menuItems[1],
-            if (self.selected == 2) "> " else "  ",
-            self.menuItems[2],
-        });
+        self.lhs.text = try Model.buildMenuText(ptr, ctx);
         self.split.lhs = self.lhs.widget();
         self.split.rhs = self.rhs.widget();
 
@@ -78,6 +70,20 @@ const Model = struct {
             .children = &self.children,
         };
     }
+
+    fn buildMenuText(ptr: *anyopaque, ctx: vxfw.DrawContext) ![]u8 {
+        const self: *Model = @ptrCast(@alignCast(ptr));
+        var buf = std.array_list.Managed([]const u8).init(ctx.arena);
+
+        for (self.menu, 0..) |item, i| {
+            const text = try std.fmt.allocPrint(ctx.arena, "{s}{s}\n", .{
+                if (self.selected == i) "> " else "  ",
+                item,
+            });
+            try buf.append(text);
+        }
+        return try std.mem.join(ctx.arena, "", buf.items[0..buf.items.len]);
+    }
 };
 
 pub fn handle() !void {
@@ -92,7 +98,6 @@ pub fn handle() !void {
     defer allocator.destroy(model);
 
     model.* = .{
-        .allocator = allocator,
         .lhs = .{ .text = "Left side" },
         .rhs = .{ .text = "right side" },
         .split = .{ .lhs = undefined, .rhs = undefined, .width = 20 },
