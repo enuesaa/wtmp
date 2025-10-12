@@ -26,11 +26,7 @@ const Model = struct {
                 self.split.rhs = self.rhs.widget();
             },
             .key_press => |key| {
-                if (key.matches('c', .{ .ctrl = true })) {
-                    ctx.quit = true;
-                    return;
-                }
-                if (key.matches('q', .{})) {
+                if (key.matches('c', .{ .ctrl = true }) or key.matches('q', .{}) or key.codepoint == vaxis.Key.enter) {
                     ctx.quit = true;
                     return;
                 }
@@ -45,10 +41,6 @@ const Model = struct {
                         self.selected +|= 1;
                     }
                     return ctx.consumeAndRedraw();
-                }
-                if (key.codepoint == vaxis.Key.enter) {
-                    ctx.quit = true;
-                    return;
                 }
             },
             else => {},
