@@ -24,6 +24,17 @@ pub fn rmdir() !void {
     try cwd.deleteDir("testdir");
 }
 
+pub fn listFilesInCurrentDir() !void {
+    const cwd = std.fs.cwd();
+
+    const entries = try cwd.openDir(".", .{ .iterate = true });
+    var it = entries.iterate();
+
+    while (try it.next()) |entry| {
+        std.debug.print("{s}\n", .{entry.name});
+    }
+}
+
 pub fn shell() !void {
     const alloc = std.heap.page_allocator;
 

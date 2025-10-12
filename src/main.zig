@@ -10,6 +10,10 @@ pub fn main() !void {
     // NOTE: first argument is the binary name like `wtmp`
     if (args.len == 1) {
         std.log.debug("start new tmp", .{});
+
+        // list files
+        try wtmp.listFilesInCurrentDir();
+
         // create tmp dir here
         try wtmp.mkdir();
 
