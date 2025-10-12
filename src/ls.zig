@@ -52,7 +52,12 @@ const Model = struct {
 
         self.lhs.text = try Model.buildMenuText(ptr, ctx);
         self.split.lhs = self.lhs.widget();
-        self.rhs.text = try std.fmt.allocPrint(ctx.arena, "  right {s}\n", .{self.menu[self.selected]});
+
+        self.rhs.text = try std.fmt.allocPrint(ctx.arena, "  right {s} {s}\n", .{
+            self.menu[self.selected],
+            Model.buildFilesText(ptr, ctx) catch
+                try std.fmt.allocPrint(ctx.arena, "error", .{}),
+        });
         self.split.rhs = self.rhs.widget();
 
         self.children[0] = .{
@@ -80,6 +85,18 @@ const Model = struct {
             try buf.append(text);
         }
         return try std.mem.join(ctx.arena, "", buf.items[0..buf.items.len]);
+    }
+
+    fn buildFilesText(_: *anyopaque, ctx: vxfw.DrawContext) ![]u8 {
+        var buf = std.array_list.Managed([]const u8).init(ctx.arena);
+
+        const cwd = std.fs.cwd();
+        const entries = try cwd.openDir(".", .{ .iterate = true });
+        var it = entries.iterate();
+        while (try it.next()) |entry| {
+            try buf.append(entry.name);
+        }
+        return try std.mem.join(ctx.arena, "\n", buf.items[0..buf.items.len]);
     }
 };
 
