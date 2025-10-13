@@ -9,6 +9,12 @@ fn startShell(allocator: std.mem.Allocator, workdir: std.fs.Dir) !void {
 
     var envmap = try std.process.getEnvMap(allocator);
     try envmap.put("AAA", "bbb");
+
+    // see https://qiita.com/syoshika_/items/0211c873475eb0d59e23
+    // if (envmap.get("PS1")) |ps1| {
+    //     std.debug.print("found {s}\n", .{ps1});
+    //     try envmap.put("PS1", try std.fmt.allocPrint(allocator, "(wtmp) {s}", .{ps1}));
+    // }
     child.env_map = &envmap;
 
     const term = try child.spawnAndWait();
