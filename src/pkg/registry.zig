@@ -8,7 +8,7 @@ fn getHomeDir(allocator: std.mem.Allocator) ![]const u8 {
     return error.RuntimeError;
 }
 
-fn getRegistryPath(allocator: std.mem.Allocator) ![]u8 {
+pub fn getRegistryPath(allocator: std.mem.Allocator) ![]u8 {
     const homedir = try getHomeDir(allocator);
     return try std.fs.path.join(allocator, &.{ homedir, ".wtmp" });
 }

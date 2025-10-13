@@ -9,18 +9,17 @@ pub fn main() !void {
 
     // NOTE: first argument is the binary name like `wtmp`
     if (args.len == 1) {
-        std.log.debug("start new tmp", .{});
-
-        try wtmp.mkTmpDir();
+        // create registry if not exist
+        try wtmp.makeRegistry();
 
         // create tmp dir here
-        try wtmp.mkdir();
+        try wtmp.makeTmpDir();
 
         // start shell
         try wtmp.shell();
 
         // delete tmp dir here
-        try wtmp.rmdir();
+        // try wtmp.rmdir();
         return;
     }
     var r = try cli.AppRunner.init(std.heap.page_allocator);

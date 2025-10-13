@@ -1,33 +1,21 @@
 const std = @import("std");
 const pkgregistry = @import("pkg/registry.zig");
+const pkgtmpdir = @import("pkg/tmpdir.zig");
 
-pub fn mkTmpDir() !void {
+pub fn makeRegistry() !void {
     try pkgregistry.make();
 }
 
-// see https://stackoverflow.com/questions/72709702/how-do-i-get-the-full-path-of-a-std-fs-dir
-pub fn mkdir() !void {
-    if (isDirExists()) return;
-
-    const cwd = std.fs.cwd();
-    const alloc = std.heap.page_allocator;
-    const cwdpath = try cwd.realpathAlloc(alloc, ".");
-    std.debug.print("cwd: {s}\n", .{cwdpath});
-
-    try cwd.makeDir("testdir");
+pub fn makeTmpDir() !void {
+    try pkgtmpdir.make();
 }
 
-fn isDirExists() bool {
-    const cwd = std.fs.cwd();
-    return if (cwd.access("testdir", .{})) |_| true else |_| false;
-}
+// pub fn rmdir() !void {
+//     if (!isDirExists()) return;
 
-pub fn rmdir() !void {
-    if (!isDirExists()) return;
-
-    const cwd = std.fs.cwd();
-    try cwd.deleteDir("testdir");
-}
+//     const cwd = std.fs.cwd();
+//     try cwd.deleteDir("testdir");
+// }
 
 pub fn shell() !void {
     const alloc = std.heap.page_allocator;
