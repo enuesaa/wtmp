@@ -7,15 +7,9 @@ pub fn makeRegistry() !void {
 }
 
 pub fn makeTmpDir() !void {
-    try pkgtmpdir.make();
+    var tmpdir = try pkgtmpdir.make();
+    try tmpdir.delete();
 }
-
-// pub fn rmdir() !void {
-//     if (!isDirExists()) return;
-
-//     const cwd = std.fs.cwd();
-//     try cwd.deleteDir("testdir");
-// }
 
 pub fn shell() !void {
     const alloc = std.heap.page_allocator;
