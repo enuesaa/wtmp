@@ -32,3 +32,22 @@ jobs:
 
       # run
       - run: ./zig-out/x86_64-linux-gnu/wtmp --help
+
+      # upload
+      - uses: actions/upload-artifact@v4
+        with:
+          name: ci-zig-buildtest
+          path: ./zig-out/aarch64-macos/wtmp
+
+  runonmac:
+    runs-on: macos-15
+    needs: buildtest
+    steps:
+      - uses: actions/download-artifact@v4
+        with:
+          merge-multiple: true
+          pattern: ci-zig-buildtest
+          path: ./zig-out/aarch64-macos/wtmp
+
+      - run: ls -la
+      - run: ./zig-out/aarch64-macos/wtmp --help
