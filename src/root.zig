@@ -1,33 +1,8 @@
 const std = @import("std");
-
-pub fn getHomeDir() !void {
-    const allocator = std.heap.page_allocator;
-    const env = try std.process.getEnvMap(allocator);
-
-    if (env.get("HOME")) |home| {
-        std.debug.print("Home dir: {s}\n", .{home});
-    } else {
-        std.debug.print("HOME not found\n", .{});
-    }
-}
+const pkgregistry = @import("pkg/registry.zig");
 
 pub fn mkTmpDir() !void {
-    const allocator = std.heap.page_allocator;
-    const env = try std.process.getEnvMap(allocator);
-
-    const home = env.get("HOME");
-    if (home == null) {
-        std.debug.print("HOME not found\n", .{});
-        return;
-    }
-    const registry = try std.fs.path.join(allocator, &.{ home.?, ".wtmp" });
-    std.debug.print("found {s}\n", .{registry});
-
-    const exists = if (std.fs.accessAbsolute(registry, .{})) |_| true else |_| false;
-    if (exists) {
-        return;
-    }
-    try std.fs.makeDirAbsolute(registry);
+    try pkgregistry.make();
 }
 
 // see https://stackoverflow.com/questions/72709702/how-do-i-get-the-full-path-of-a-std-fs-dir
