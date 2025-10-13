@@ -6,7 +6,8 @@ const Model = struct {
     split: vxfw.SplitView,
     lhs: vxfw.Text,
     rhs: vxfw.Text,
-    children: [1]vxfw.SubSurface = undefined,
+    header: vxfw.Text,
+    children: [2]vxfw.SubSurface = undefined,
     menu: [3][]const u8 = [_][]const u8{ "top", "second", "third" },
     action: []const u8 = "",
     selected: u32 = 0,
@@ -72,7 +73,11 @@ const Model = struct {
         self.split.rhs = self.rhs.widget();
 
         self.children[0] = .{
-            .origin = .{ .row = 1, .col = 1 },
+            .origin = .{ .row = 0, .col = 0 },
+            .surface = try self.header.widget().draw(ctx),
+        };
+        self.children[1] = .{
+            .origin = .{ .row = 2, .col = 1 },
             .surface = try self.split.widget().draw(ctx),
         };
 
@@ -130,6 +135,7 @@ fn launch() !Action {
     model.* = .{
         .lhs = .{ .text = "" },
         .rhs = .{ .text = "  right" },
+        .header = .{ .text = "[q] Quit, [r] Remove, [Enter] Continue Working" },
         .split = .{ .lhs = undefined, .rhs = undefined, .width = 20 },
     };
     try app.run(model.widget(), .{});
