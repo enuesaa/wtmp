@@ -1,7 +1,6 @@
 const std = @import("std");
 const wtmp = @import("wtmp");
 const cli = @import("cli");
-const ls = @import("ls.zig");
 
 pub fn main() !void {
     const args = try std.process.argsAlloc(std.heap.page_allocator);
@@ -30,7 +29,7 @@ pub fn main() !void {
                         },
                         .target = cli.CommandTarget{
                             .action = cli.CommandAction{
-                                .exec = ls.handle,
+                                .exec = wtmp.list,
                             },
                         },
                     },

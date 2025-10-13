@@ -18,6 +18,9 @@ pub fn build(b: *std.Build) void {
     const mod = b.addModule("wtmp", .{
         .root_source_file = b.path("src/root.zig"),
         .target = target,
+        .imports = &.{
+            .{ .name = "vaxis", .module = vaxis.module("vaxis") },
+        },
     });
     const exe = b.addExecutable(.{
         .name = "wtmp",
@@ -28,7 +31,6 @@ pub fn build(b: *std.Build) void {
             .imports = &.{
                 .{ .name = "wtmp", .module = mod },
                 .{ .name = "cli", .module = zigcli.module("cli") },
-                .{ .name = "vaxis", .module = vaxis.module("vaxis") },
             },
         }),
     });
