@@ -8,6 +8,7 @@ const Model = struct {
     rhs: vxfw.Text,
     children: [1]vxfw.SubSurface = undefined,
     menu: [3][]const u8 = [_][]const u8{ "top", "second", "third" },
+    action: []const u8 = "",
     selected: u32 = 0,
 
     pub fn widget(self: *Model) vxfw.Widget {
@@ -26,7 +27,17 @@ const Model = struct {
                 self.split.rhs = self.rhs.widget();
             },
             .key_press => |key| {
-                if (key.matches('c', .{ .ctrl = true }) or key.matches('q', .{}) or key.codepoint == vaxis.Key.enter) {
+                if (key.matches('c', .{ .ctrl = true }) or key.matches('q', .{})) {
+                    ctx.quit = true;
+                    return;
+                }
+                if (key.codepoint == vaxis.Key.enter) {
+                    self.action = "continue";
+                    ctx.quit = true;
+                    return;
+                }
+                if (key.matches('r', .{})) {
+                    self.action = "remove";
                     ctx.quit = true;
                     return;
                 }
@@ -100,7 +111,12 @@ const Model = struct {
     }
 };
 
-fn launch() ![]const u8 {
+const Action = struct {
+    name: []const u8 = "",
+    selected: []const u8 = "",
+};
+
+fn launch() !Action {
     var gpa = std.heap.GeneralPurposeAllocator(.{}){};
     defer _ = gpa.deinit();
     const allocator = gpa.allocator();
@@ -108,7 +124,7 @@ fn launch() ![]const u8 {
     var app = try vxfw.App.init(allocator);
     defer app.deinit();
 
-    const model = try allocator.create(Model);
+    var model = try allocator.create(Model);
     defer allocator.destroy(model);
 
     model.* = .{
@@ -118,10 +134,21 @@ fn launch() ![]const u8 {
     };
     try app.run(model.widget(), .{});
 
-    return model.menu[model.selected];
+    return Action{
+        .name = model.action,
+        .selected = model.menu[model.selected],
+    };
 }
 
 pub fn handle() !void {
-    const selected = try launch();
-    std.debug.print("selected: {s}\n", .{selected});
+    const action = try launch();
+    std.debug.print("selected: {s}\n", .{action.selected});
+    std.debug.print("action: {s}\n", .{action.name});
+
+    if (std.mem.eql(u8, action.name, "remove")) {
+        std.debug.print("remove!\n", .{});
+    }
+    if (std.mem.eql(u8, action.name, "continue")) {
+        std.debug.print("continue!\n", .{});
+    }
 }
