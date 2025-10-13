@@ -11,8 +11,7 @@ pub fn main() !void {
     if (args.len == 1) {
         std.log.debug("start new tmp", .{});
 
-        // list files
-        try wtmp.listFilesInCurrentDir();
+        try wtmp.getHomeDir();
 
         // create tmp dir here
         try wtmp.mkdir();

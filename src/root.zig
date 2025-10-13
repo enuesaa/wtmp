@@ -1,5 +1,16 @@
 const std = @import("std");
 
+pub fn getHomeDir() !void {
+    const allocator = std.heap.page_allocator;
+    const env = try std.process.getEnvMap(allocator);
+
+    if (env.get("HOME")) |home| {
+        std.debug.print("Home dir: {s}\n", .{home});
+    } else {
+        std.debug.print("HOME not found\n", .{});
+    }
+}
+
 // see https://stackoverflow.com/questions/72709702/how-do-i-get-the-full-path-of-a-std-fs-dir
 pub fn mkdir() !void {
     if (isDirExists()) return;
