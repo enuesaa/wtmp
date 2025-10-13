@@ -5,7 +5,7 @@ fn getHomeDir(allocator: std.mem.Allocator) ![]const u8 {
     if (env.get("HOME")) |home| {
         return home;
     }
-    return ""; // TODO
+    return error.RuntimeError;
 }
 
 fn getRegistryPath(allocator: std.mem.Allocator) ![]u8 {
@@ -25,7 +25,6 @@ fn makeRegistry(allocator: std.mem.Allocator) !void {
 
 pub fn make() !void {
     var gpa = std.heap.GeneralPurposeAllocator(.{}){};
-    // defer _ = gpa.deinit();
     const allocator = gpa.allocator();
 
     if (try isRegistryExist(allocator)) {
