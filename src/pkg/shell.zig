@@ -15,6 +15,8 @@ fn startShell(allocator: std.mem.Allocator, workdir: std.fs.Dir) !void {
     //     std.debug.print("found {s}\n", .{ps1});
     //     try envmap.put("PS1", try std.fmt.allocPrint(allocator, "(wtmp) {s}", .{ps1}));
     // }
+    // try envmap.put("ZDOTDIR", "/Users/nsrciog/tmp");
+    try envmap.put("PROMPT", "a"); // .zshrc が上書きしてそう
     child.env_map = &envmap;
 
     const term = try child.spawnAndWait();
