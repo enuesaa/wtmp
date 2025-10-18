@@ -8,7 +8,7 @@ pub fn main() !void {
 
     // NOTE: first argument is the binary name like `wtmp`
     if (args.len == 1) {
-        try wtmp.genRandomString();
+        _ = try wtmp.genRandomString();
 
         // create registry if not exist
         // try wtmp.makeRegistry();
