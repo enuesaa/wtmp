@@ -21,7 +21,11 @@ pub const TmpDir = struct {
 
 fn getTmpDirPath(allocator: std.mem.Allocator) !TmpDir {
     const registry = try pkgregistry.getRegistryPath(allocator);
-    const dirName = try genRandomString(allocator);
+    const dirName = try std.fmt.allocPrint(
+        allocator,
+        "{s}-{s}",
+        .{ try now(allocator), try genRandomString(allocator) },
+    );
     const path = try std.fs.path.join(allocator, &.{ registry, dirName });
     return TmpDir{ .path = path };
 }
@@ -29,13 +33,34 @@ fn getTmpDirPath(allocator: std.mem.Allocator) !TmpDir {
 fn genRandomString(allocator: std.mem.Allocator) ![]u8 {
     var rng = std.Random.DefaultPrng.init(@intCast(std.time.nanoTimestamp()));
 
-    var buf = try allocator.alloc(u8, 16);
+    var buf = try allocator.alloc(u8, 5);
     const charset = "abcdefghijklmnopqrstuvwxyz0123456789";
 
     for (buf, 0..) |_, i| {
         buf[i] = charset[rng.random().int(u8) % charset.len];
     }
     return buf;
+}
+
+fn now(allocator: std.mem.Allocator) ![]u8 {
+    const timestamp = std.time.timestamp();
+    const jsttimestamp = timestamp + 9 * 3600;
+
+    const epoch = std.time.epoch.EpochSeconds{ .secs = @as(u64, @intCast(jsttimestamp)) };
+
+    const daySeconds = epoch.getDaySeconds();
+    const day = epoch.getEpochDay();
+    const yearDay = day.calculateYearDay();
+    const monthDay = yearDay.calculateMonthDay();
+
+    const date = try std.fmt.allocPrint(allocator, "{:04}{:02}{:02}T{:02}{:02}", .{
+        yearDay.year,
+        monthDay.month.numeric(),
+        monthDay.day_index + 1,
+        daySeconds.getHoursIntoDay(),
+        daySeconds.getMinutesIntoHour(),
+    });
+    return date;
 }
 
 pub fn make() !TmpDir {
