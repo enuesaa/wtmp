@@ -3,6 +3,7 @@ const pkgregistry = @import("registry.zig");
 
 pub const TmpDir = struct {
     path: []u8,
+    dirName: []u8,
 
     pub fn make(self: *TmpDir) !void {
         // see https://stackoverflow.com/questions/72709702/how-do-i-get-the-full-path-of-a-std-fs-dir
@@ -20,14 +21,14 @@ pub const TmpDir = struct {
 };
 
 fn getTmpDirPath(allocator: std.mem.Allocator) !TmpDir {
-    const registry = try pkgregistry.getRegistryPath(allocator);
+    const registryPath = try pkgregistry.getRegistryPath(allocator);
     const dirName = try std.fmt.allocPrint(
         allocator,
         "{s}-{s}",
         .{ try now(allocator), try genRandomString(allocator) },
     );
-    const path = try std.fs.path.join(allocator, &.{ registry, dirName });
-    return TmpDir{ .path = path };
+    const path = try std.fs.path.join(allocator, &.{ registryPath, dirName });
+    return TmpDir{ .path = path, .dirName = dirName };
 }
 
 fn genRandomString(allocator: std.mem.Allocator) ![]u8 {
@@ -86,7 +87,8 @@ pub fn list() ![]TmpDir {
 
     while (try it.next()) |entry| {
         const path = try std.fs.path.join(allocator, &.{ registryPath, entry.name });
-        try buf.append(TmpDir{ .path = path });
+        const dirName = try allocator.dupe(u8, entry.name);
+        try buf.append(TmpDir{ .path = path, .dirName = dirName });
     }
     return buf.toOwnedSlice();
 }

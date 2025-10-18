@@ -131,7 +131,7 @@ fn launch() !Action {
     var menu = try allocator.alloc([]const u8, tmpdirs.len);
     defer allocator.free(menu);
     for (tmpdirs, 0..) |td, i| {
-        menu[i] = td.path;
+        menu[i] = td.dirName;
     }
 
     var app = try vxfw.App.init(allocator);
