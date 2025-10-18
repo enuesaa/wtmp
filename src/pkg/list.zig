@@ -9,7 +9,7 @@ const Model = struct {
     rhs: vxfw.Text,
     header: vxfw.Text,
     children: [2]vxfw.SubSurface = undefined,
-    menu: [][]const u8 = undefined, //= [_][]const u8{ "top", "second", "third" },
+    menu: []pkgtmpdir.TmpDir = undefined, //= [_][]const u8{ "top", "second", "third" },
     action: []const u8 = "",
     selected: u32 = 0,
 
@@ -67,7 +67,7 @@ const Model = struct {
         self.split.lhs = self.lhs.widget();
 
         self.rhs.text = try std.fmt.allocPrint(ctx.arena, "  right {s} {s}\n", .{
-            self.menu[self.selected],
+            self.menu[self.selected].path,
             Model.buildFilesText(ptr, ctx) catch
                 try std.fmt.allocPrint(ctx.arena, "error", .{}),
         });
@@ -97,18 +97,19 @@ const Model = struct {
         for (self.menu, 0..) |item, i| {
             const text = try std.fmt.allocPrint(ctx.arena, "{s}{s}\n", .{
                 if (self.selected == i) "> " else "  ",
-                item,
+                item.dirName,
             });
             try buf.append(text);
         }
         return try std.mem.join(ctx.arena, "", buf.items[0..buf.items.len]);
     }
 
-    fn buildFilesText(_: *anyopaque, ctx: vxfw.DrawContext) ![]u8 {
+    fn buildFilesText(ptr: *anyopaque, ctx: vxfw.DrawContext) ![]u8 {
+        const self: *Model = @ptrCast(@alignCast(ptr));
         var buf = std.array_list.Managed([]const u8).init(ctx.arena);
 
-        const cwd = std.fs.cwd();
-        const entries = try cwd.openDir(".", .{ .iterate = true });
+        const selectedPath = self.menu[self.selected].path;
+        const entries = try std.fs.Dir.openDir(undefined, selectedPath, .{ .iterate = true });
         var it = entries.iterate();
         while (try it.next()) |entry| {
             try buf.append(entry.name);
@@ -128,11 +129,6 @@ fn launch() !Action {
     const allocator = gpa.allocator();
 
     const tmpdirs = try pkgtmpdir.list();
-    var menu = try allocator.alloc([]const u8, tmpdirs.len);
-    defer allocator.free(menu);
-    for (tmpdirs, 0..) |td, i| {
-        menu[i] = td.dirName;
-    }
 
     var app = try vxfw.App.init(allocator);
     defer app.deinit();
@@ -145,13 +141,13 @@ fn launch() !Action {
         .rhs = .{ .text = "  right" },
         .header = .{ .text = "[q] Quit, [r] Remove, [Enter] Continue Working" },
         .split = .{ .lhs = undefined, .rhs = undefined, .width = 20 },
-        .menu = menu,
+        .menu = tmpdirs,
     };
     try app.run(model.widget(), .{});
 
     return Action{
         .name = model.action,
-        .selected = model.menu[model.selected],
+        .selected = model.menu[model.selected].path,
     };
 }
 
