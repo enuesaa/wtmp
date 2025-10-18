@@ -8,11 +8,13 @@ pub fn main() !void {
 
     // NOTE: first argument is the binary name like `wtmp`
     if (args.len == 1) {
+        try wtmp.genRandomString();
+
         // create registry if not exist
-        try wtmp.makeRegistry();
+        // try wtmp.makeRegistry();
 
         // create tmpdir, start shell, delete it
-        try wtmp.workInTmp();
+        // try wtmp.workInTmp();
         return;
     }
     var r = try cli.AppRunner.init(std.heap.page_allocator);
