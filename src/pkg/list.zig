@@ -160,5 +160,7 @@ pub fn handle() !void {
     }
 
     const tmpdirs = try pkgtmpdir.list();
-    std.debug.print("{s}\n", .{tmpdirs});
+    for (tmpdirs) |tmpdir| {
+        std.debug.print("{s}\n", .{tmpdir.path});
+    }
 }
