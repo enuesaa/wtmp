@@ -66,11 +66,8 @@ const Model = struct {
         self.lhs.text = try Model.buildMenuText(ptr, ctx);
         self.split.lhs = self.lhs.widget();
 
-        self.rhs.text = try std.fmt.allocPrint(ctx.arena, "  right {s} {s}\n", .{
-            self.menu[self.selected].path,
-            Model.buildFilesText(ptr, ctx) catch
-                try std.fmt.allocPrint(ctx.arena, "error", .{}),
-        });
+        self.rhs.text = Model.buildFilesText(ptr, ctx) catch
+            try std.fmt.allocPrint(ctx.arena, "error", .{});
         self.split.rhs = self.rhs.widget();
 
         self.children[0] = .{
@@ -137,10 +134,10 @@ fn launch() !Action {
     defer allocator.destroy(model);
 
     model.* = .{
-        .lhs = .{ .text = "" },
-        .rhs = .{ .text = "  right" },
+        .lhs = .{ .text = "", .text_align = .center },
+        .rhs = .{ .text = "" },
         .header = .{ .text = "[q] Quit, [r] Remove, [Enter] Continue Working" },
-        .split = .{ .lhs = undefined, .rhs = undefined, .width = 20 },
+        .split = .{ .lhs = undefined, .rhs = undefined, .width = 25 },
         .menu = tmpdirs,
     };
     try app.run(model.widget(), .{});
