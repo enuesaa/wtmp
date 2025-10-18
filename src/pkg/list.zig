@@ -9,7 +9,7 @@ const Model = struct {
     rhs: vxfw.Text,
     header: vxfw.Text,
     children: [2]vxfw.SubSurface = undefined,
-    menu: [3][]const u8 = [_][]const u8{ "top", "second", "third" },
+    menu: [][]const u8 = undefined, //= [_][]const u8{ "top", "second", "third" },
     action: []const u8 = "",
     selected: u32 = 0,
 
@@ -127,6 +127,13 @@ fn launch() !Action {
     defer _ = gpa.deinit();
     const allocator = gpa.allocator();
 
+    const tmpdirs = try pkgtmpdir.list();
+    var menu = try allocator.alloc([]const u8, tmpdirs.len);
+    defer allocator.free(menu);
+    for (tmpdirs, 0..) |td, i| {
+        menu[i] = td.path;
+    }
+
     var app = try vxfw.App.init(allocator);
     defer app.deinit();
 
@@ -138,6 +145,7 @@ fn launch() !Action {
         .rhs = .{ .text = "  right" },
         .header = .{ .text = "[q] Quit, [r] Remove, [Enter] Continue Working" },
         .split = .{ .lhs = undefined, .rhs = undefined, .width = 20 },
+        .menu = menu,
     };
     try app.run(model.widget(), .{});
 
@@ -157,10 +165,5 @@ pub fn handle() !void {
     }
     if (std.mem.eql(u8, action.name, "continue")) {
         std.debug.print("continue!\n", .{});
-    }
-
-    const tmpdirs = try pkgtmpdir.list();
-    for (tmpdirs) |tmpdir| {
-        std.debug.print("{s}\n", .{tmpdir.path});
     }
 }
