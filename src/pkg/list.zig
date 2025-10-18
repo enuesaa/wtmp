@@ -9,8 +9,8 @@ const Model = struct {
     rhs: vxfw.Text,
     header: vxfw.Text,
     children: [2]vxfw.SubSurface = undefined,
-    menu: []pkgtmpdir.TmpDir = undefined, //= [_][]const u8{ "top", "second", "third" },
-    action: []const u8 = "",
+    menu: []pkgtmpdir.TmpDir = undefined,
+    action: []const u8 = undefined,
     selected: u32 = 0,
 
     pub fn widget(self: *Model) vxfw.Widget {
@@ -75,7 +75,7 @@ const Model = struct {
             .surface = try self.header.widget().draw(ctx),
         };
         self.children[1] = .{
-            .origin = .{ .row = 2, .col = 1 },
+            .origin = .{ .row = 2, .col = 0 },
             .surface = try self.split.widget().draw(ctx),
         };
 
@@ -121,11 +121,11 @@ const Action = struct {
 };
 
 fn launch() !Action {
+    const tmpdirs = try pkgtmpdir.list();
+
     var gpa = std.heap.GeneralPurposeAllocator(.{}){};
     defer _ = gpa.deinit();
     const allocator = gpa.allocator();
-
-    const tmpdirs = try pkgtmpdir.list();
 
     var app = try vxfw.App.init(allocator);
     defer app.deinit();
@@ -137,7 +137,7 @@ fn launch() !Action {
         .lhs = .{ .text = "", .text_align = .center },
         .rhs = .{ .text = "" },
         .header = .{ .text = "[q] Quit, [r] Remove, [Enter] Continue Working" },
-        .split = .{ .lhs = undefined, .rhs = undefined, .width = 25 },
+        .split = .{ .lhs = undefined, .rhs = undefined, .width = 22 },
         .menu = tmpdirs,
     };
     try app.run(model.widget(), .{});
@@ -151,7 +151,6 @@ fn launch() !Action {
 pub fn handle() !void {
     const action = try launch();
     std.debug.print("selected: {s}\n", .{action.selected});
-    std.debug.print("action: {s}\n", .{action.name});
 
     if (std.mem.eql(u8, action.name, "remove")) {
         std.debug.print("remove!\n", .{});
