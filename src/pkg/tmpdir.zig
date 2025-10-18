@@ -21,8 +21,21 @@ pub const TmpDir = struct {
 
 fn getTmpDirPath(allocator: std.mem.Allocator) !TmpDir {
     const registry = try pkgregistry.getRegistryPath(allocator);
-    const path = try std.fs.path.join(allocator, &.{ registry, "tmp" });
+    const dirName = try genRandomString(allocator);
+    const path = try std.fs.path.join(allocator, &.{ registry, dirName });
     return TmpDir{ .path = path };
+}
+
+fn genRandomString(allocator: std.mem.Allocator) ![]u8 {
+    var rng = std.Random.DefaultPrng.init(@intCast(std.time.nanoTimestamp()));
+
+    var buf = try allocator.alloc(u8, 16);
+    const charset = "abcdefghijklmnopqrstuvwxyz0123456789";
+
+    for (buf, 0..) |_, i| {
+        buf[i] = charset[rng.random().int(u8) % charset.len];
+    }
+    return buf;
 }
 
 pub fn make() !TmpDir {
