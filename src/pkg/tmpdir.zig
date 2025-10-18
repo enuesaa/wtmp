@@ -72,3 +72,19 @@ pub fn make() !TmpDir {
 
     return tmpdir;
 }
+
+pub fn list() ![]u8 {
+    var gpa = std.heap.GeneralPurposeAllocator(.{}){};
+    const allocator = gpa.allocator();
+
+    const registryPath = try pkgregistry.getRegistryPath(allocator);
+    var buf = std.array_list.Managed([]const u8).init(allocator);
+
+    const registry = try std.fs.openDirAbsolute(registryPath, .{});
+    const entries = try registry.openDir(".", .{ .iterate = true });
+    var it = entries.iterate();
+    while (try it.next()) |entry| {
+        try buf.append(entry.name);
+    }
+    return try std.mem.join(allocator, "\n", buf.items[0..buf.items.len]);
+}

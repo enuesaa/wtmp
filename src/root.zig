@@ -9,13 +9,13 @@ pub fn makeRegistry() !void {
 
 pub fn workInTmp() !void {
     // create
-    var tmpdir = try pkgtmpdir.make();
+    const tmpdir = try pkgtmpdir.make();
 
     // start shell
     try pkgshell.start(tmpdir);
 
     // delete
-    try tmpdir.delete();
+    // try tmpdir.delete();
 }
 
 pub fn list() !void {

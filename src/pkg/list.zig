@@ -1,6 +1,7 @@
 const std = @import("std");
 const vaxis = @import("vaxis");
 const vxfw = vaxis.vxfw;
+const pkgtmpdir = @import("tmpdir.zig");
 
 const Model = struct {
     split: vxfw.SplitView,
@@ -157,4 +158,7 @@ pub fn handle() !void {
     if (std.mem.eql(u8, action.name, "continue")) {
         std.debug.print("continue!\n", .{});
     }
+
+    const tmpdirs = try pkgtmpdir.list();
+    std.debug.print("{s}\n", .{tmpdirs});
 }
