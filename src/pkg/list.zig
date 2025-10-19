@@ -4,14 +4,19 @@ const vxfw = vaxis.vxfw;
 const pkgtmpdir = @import("tmpdir.zig");
 
 const Model = struct {
-    split: vxfw.SplitView,
-    lhs: vxfw.Text,
-    rhs: vxfw.Text,
-    header: vxfw.Text,
-    children: [2]vxfw.SubSurface = undefined,
+    header: vxfw.Text = .{ .text = "[q] Quit, [r] Remove, [Enter] Continue Working" },
+    split: vxfw.SplitView = .{ .lhs = undefined, .rhs = undefined, .width = 22 },
+    lhs: vxfw.Text = .{ .text = "", .text_align = .center },
+    rhs: vxfw.Text = .{ .text = "" },
     menu: []pkgtmpdir.TmpDir = undefined,
     action: []const u8 = undefined,
     selected: u32 = 0,
+
+    pub fn init(tmpdirs: []pkgtmpdir.TmpDir) !Model {
+        return Model{
+            .menu = tmpdirs,
+        };
+    }
 
     pub fn widget(self: *Model) vxfw.Widget {
         return .{
@@ -70,20 +75,21 @@ const Model = struct {
             try std.fmt.allocPrint(ctx.arena, "error", .{});
         self.split.rhs = self.rhs.widget();
 
-        self.children[0] = .{
+        var children = try ctx.arena.alloc(vxfw.SubSurface, 2);
+        children[0] = .{
             .origin = .{ .row = 0, .col = 0 },
             .surface = try self.header.widget().draw(ctx),
         };
-        self.children[1] = .{
+        children[1] = .{
             .origin = .{ .row = 2, .col = 0 },
             .surface = try self.split.widget().draw(ctx),
         };
 
-        return .{
+        return vxfw.Surface{
             .size = ctx.max.size(),
             .widget = self.widget(),
             .buffer = &.{},
-            .children = &self.children,
+            .children = children,
         };
     }
 
@@ -114,29 +120,18 @@ const Action = struct {
 
 fn launch(allocator: std.mem.Allocator) !Action {
     const tmpdirs = try pkgtmpdir.list(allocator);
-    defer {
-        for (tmpdirs) |*td| td.deinit();
-        allocator.free(tmpdirs);
-    }
+    defer allocator.free(tmpdirs);
+    defer for (tmpdirs) |*td| td.deinit();
 
     var app = try vxfw.App.init(allocator);
     defer app.deinit();
 
-    var model = try allocator.create(Model);
-    defer allocator.destroy(model);
-
-    model.* = .{
-        .lhs = .{ .text = "", .text_align = .center },
-        .rhs = .{ .text = "" },
-        .header = .{ .text = "[q] Quit, [r] Remove, [Enter] Continue Working" },
-        .split = .{ .lhs = undefined, .rhs = undefined, .width = 22 },
-        .menu = tmpdirs,
-    };
+    var model = try Model.init(tmpdirs);
     try app.run(model.widget(), .{});
 
     return Action{
         .name = model.action,
-        .selected = "model.menu[model.selected].path",
+        .selected = model.menu[model.selected].path,
     };
 }
 
