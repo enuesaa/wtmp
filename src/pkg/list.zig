@@ -95,14 +95,14 @@ const Model = struct {
 
     fn buildMenuText(ptr: *anyopaque, ctx: vxfw.DrawContext) ![]u8 {
         const self: *Model = @ptrCast(@alignCast(ptr));
-        var buf = std.array_list.Managed([]const u8).init(ctx.arena);
-
+        var buf: std.array_list.Aligned([]const u8, null) = .empty;
+        defer buf.deinit(ctx.arena);
         for (self.menu, 0..) |item, i| {
             const text = try std.fmt.allocPrint(ctx.arena, "{s}{s}\n", .{
                 if (self.selected == i) "> " else "  ",
                 item.dirName,
             });
-            try buf.append(text);
+            try buf.append(ctx.arena, text);
         }
         return try std.mem.join(ctx.arena, "", buf.items[0..buf.items.len]);
     }
