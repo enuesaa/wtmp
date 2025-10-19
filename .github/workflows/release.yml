@@ -1,0 +1,55 @@
+name: Release
+
+on:
+  push:
+    tags:
+      - 'v*'
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v5
+      - uses: mlugg/setup-zig@v2
+
+      - run: zig build -Dtarget=x86_64-macos --prefix-exe-dir x86_64-macos
+      - run: zig build -Dtarget=aarch64-macos --prefix-exe-dir aarch64-macos
+      - run: zig build -Dtarget=x86_64-linux-gnu --prefix-exe-dir x86_64-linux-gnu
+      - run: zig build -Dtarget=aarch64-linux-gnu --prefix-exe-dir aarch64-linux-gnu
+
+      - uses: actions/upload-artifact@v4
+        with:
+          name: release-zig-out
+          path: |
+            ./zig-out/x86_64-macos
+            ./zig-out/aarch64-macos
+            ./zig-out/x86_64-linux-gnu
+            ./zig-out/aarch64-linux-gnu
+
+  release:
+    runs-on: ubuntu-latest
+    needs: build
+    steps:
+      - uses: actions/download-artifact@v4
+        with:
+          merge-multiple: true
+          pattern: release-zig-out
+          path: dist
+
+      - run: ls dist
+
+      - run: |
+          for dir in dist/*; do
+            tar -czf dist/$(basename $dir).tar.gz -C $dir .
+          done
+      - run: shasum -a 256 dist/*.tar.gz > dist/checksums.txt
+
+      - run: |
+          cat <<'EOF' | envsubst > release.md
+          # Release ${{ github.ref_name }}
+          EOF
+
+      - uses: softprops/action-gh-release@v2
+        with:
+          body_path: release.md
+          files: dist/*.tar.gz
