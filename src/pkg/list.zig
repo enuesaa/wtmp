@@ -135,11 +135,7 @@ fn launch(allocator: std.mem.Allocator) !Action {
     };
 }
 
-pub fn handle() !void {
-    var gpa = std.heap.GeneralPurposeAllocator(.{}){};
-    defer _ = gpa.deinit();
-    const allocator = gpa.allocator();
-
+pub fn handle(allocator: std.mem.Allocator) !void {
     const action = try launch(allocator);
     std.debug.print("selected: {s}\n", .{action.selected});
 

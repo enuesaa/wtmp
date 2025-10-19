@@ -95,11 +95,7 @@ fn now(allocator: std.mem.Allocator) ![]u8 {
     return date;
 }
 
-pub fn make() !TmpDir {
-    var gpa = std.heap.GeneralPurposeAllocator(.{}){};
-    defer _ = gpa.deinit();
-    const allocator = gpa.allocator();
-
+pub fn make(allocator: std.mem.Allocator) !TmpDir {
     var tmpdir = try getTmpDirPath(allocator);
     try tmpdir.make();
 
