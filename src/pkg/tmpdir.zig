@@ -107,14 +107,16 @@ pub fn list() ![]TmpDir {
     const allocator = gpa.allocator();
 
     const registryPath = try pkgregistry.getRegistryPath(allocator);
+    defer allocator.free(registryPath);
     const registry = try std.fs.openDirAbsolute(registryPath, .{});
 
     var buf = std.array_list.Managed(TmpDir).init(allocator);
+    defer buf.deinit();
     const entries = try registry.openDir(".", .{ .iterate = true });
     var it = entries.iterate();
 
     while (try it.next()) |entry| {
         try buf.append(try TmpDir.init(registryPath, entry.name));
     }
-    return try buf.toOwnedSlice();
+    return buf.toOwnedSlice();
 }

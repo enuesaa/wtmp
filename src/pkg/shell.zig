@@ -20,11 +20,11 @@ fn startShell(allocator: std.mem.Allocator, workdir: std.fs.Dir) !void {
     std.debug.print("exit code: {d}\n", .{term.Exited});
 }
 
-pub fn start(tmpdir: pkgtmpdir.TmpDir) !void {
+pub fn start(tmppath: []u8) !void {
     var gpa = std.heap.GeneralPurposeAllocator(.{}){};
     defer _ = gpa.deinit();
     const allocator = gpa.allocator();
 
-    const workdir = try std.fs.openDirAbsolute(tmpdir.path, .{});
+    const workdir = try std.fs.openDirAbsolute(tmppath, .{});
     try startShell(allocator, workdir);
 }

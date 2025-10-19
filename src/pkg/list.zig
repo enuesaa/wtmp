@@ -136,7 +136,7 @@ fn launch(allocator: std.mem.Allocator) !Action {
 
     return Action{
         .name = model.action,
-        .selected = model.menu[model.selected].path,
+        .selected = "model.menu[model.selected].path",
     };
 }
 

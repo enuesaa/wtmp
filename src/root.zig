@@ -8,10 +8,11 @@ pub fn workInTmp() !void {
     try pkgregistry.make();
 
     // create
-    const tmpdir = try pkgtmpdir.make();
+    var tmpdir = try pkgtmpdir.make();
+    defer tmpdir.deinit();
 
     // start shell
-    try pkgshell.start(tmpdir);
+    try pkgshell.start(tmpdir.path);
 }
 
 pub fn list() !void {
