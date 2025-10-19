@@ -101,9 +101,9 @@ const Model = struct {
         return try std.mem.join(ctx.arena, "", buf.items[0..buf.items.len]);
     }
 
-    fn buildFilesText(ptr: *anyopaque, ctx: vxfw.DrawContext) ![]u8 {
+    fn buildFilesText(ptr: *anyopaque, _: vxfw.DrawContext) ![]u8 {
         const self: *Model = @ptrCast(@alignCast(ptr));
-        return self.menu[self.selected].listFiles(ctx.arena);
+        return self.menu[self.selected].listFiles();
     }
 };
 
@@ -114,6 +114,10 @@ const Action = struct {
 
 fn launch(allocator: std.mem.Allocator) !Action {
     const tmpdirs = try pkgtmpdir.list();
+    defer {
+        for (tmpdirs) |*td| td.deinit();
+        // allocator.free(tmpdirs);
+    }
 
     var app = try vxfw.App.init(allocator);
     defer app.deinit();

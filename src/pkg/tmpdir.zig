@@ -2,8 +2,23 @@ const std = @import("std");
 const pkgregistry = @import("registry.zig");
 
 pub const TmpDir = struct {
+    arena: std.heap.ArenaAllocator,
     path: []u8,
     dirName: []u8,
+
+    pub fn init(registryPath: []const u8, dirName: []const u8) !TmpDir {
+        var arena = std.heap.ArenaAllocator.init(std.heap.page_allocator);
+        const allocator = arena.allocator();
+        return TmpDir{
+            .arena = arena,
+            .path = try std.fs.path.join(allocator, &.{ registryPath, dirName }),
+            .dirName = try allocator.dupe(u8, dirName),
+        };
+    }
+
+    pub fn deinit(self: *TmpDir) void {
+        self.arena.deinit();
+    }
 
     pub fn make(self: *TmpDir) !void {
         // see https://stackoverflow.com/questions/72709702/how-do-i-get-the-full-path-of-a-std-fs-dir
@@ -19,9 +34,9 @@ pub const TmpDir = struct {
         try std.fs.deleteDirAbsolute(self.path);
     }
 
-    pub fn listFiles(self: *TmpDir, allocator: std.mem.Allocator) ![]u8 {
+    pub fn listFiles(self: *TmpDir) ![]u8 {
+        const allocator = self.arena.allocator();
         var buf = std.array_list.Managed([]const u8).init(allocator);
-
         const entries = try std.fs.Dir.openDir(undefined, self.path, .{ .iterate = true });
         var it = entries.iterate();
         while (try it.next()) |entry| {
@@ -33,13 +48,13 @@ pub const TmpDir = struct {
 
 fn getTmpDirPath(allocator: std.mem.Allocator) !TmpDir {
     const registryPath = try pkgregistry.getRegistryPath(allocator);
+    defer allocator.free(registryPath);
     const dirName = try std.fmt.allocPrint(
         allocator,
         "{s}-{s}",
         .{ try now(allocator), try genRandomString(allocator) },
     );
-    const path = try std.fs.path.join(allocator, &.{ registryPath, dirName });
-    return TmpDir{ .path = path, .dirName = dirName };
+    return try TmpDir.init(registryPath, dirName);
 }
 
 fn genRandomString(allocator: std.mem.Allocator) ![]u8 {
@@ -99,9 +114,7 @@ pub fn list() ![]TmpDir {
     var it = entries.iterate();
 
     while (try it.next()) |entry| {
-        const path = try std.fs.path.join(allocator, &.{ registryPath, entry.name });
-        const dirName = try allocator.dupe(u8, entry.name);
-        try buf.append(TmpDir{ .path = path, .dirName = dirName });
+        try buf.append(try TmpDir.init(registryPath, entry.name));
     }
     return try buf.toOwnedSlice();
 }
