@@ -54,7 +54,7 @@ fn now(allocator: std.mem.Allocator) ![]u8 {
     const yearDay = day.calculateYearDay();
     const monthDay = yearDay.calculateMonthDay();
 
-    const date = try std.fmt.allocPrint(allocator, "{:04}{:02}{:02}T{:02}{:02}", .{
+    const date = try std.fmt.allocPrint(allocator, "{:04}{:02}{:02}{:02}{:02}", .{
         yearDay.year,
         monthDay.month.numeric(),
         monthDay.day_index + 1,

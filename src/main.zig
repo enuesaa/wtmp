@@ -8,12 +8,10 @@ pub fn main() !void {
 
     // NOTE: first argument is the binary name like `wtmp`
     if (args.len == 1) {
-        try wtmp.gentime();
-
         // create registry if not exist
         try wtmp.makeRegistry();
 
-        // create tmpdir, start shell, delete it
+        // create tmpdir, start shell
         try wtmp.workInTmp();
         return;
     }
