@@ -101,22 +101,18 @@ pub fn make() !TmpDir {
     return tmpdir;
 }
 
-pub fn list() ![]TmpDir {
-    var gpa = std.heap.GeneralPurposeAllocator(.{}){};
-    defer _ = gpa.deinit();
-    const allocator = gpa.allocator();
-
+pub fn list(allocator: std.mem.Allocator) ![]TmpDir {
     const registryPath = try pkgregistry.getRegistryPath(allocator);
     defer allocator.free(registryPath);
     const registry = try std.fs.openDirAbsolute(registryPath, .{});
 
-    var buf = std.array_list.Managed(TmpDir).init(allocator);
-    defer buf.deinit();
+    var buf: std.array_list.Aligned(TmpDir, null) = .empty;
+    defer buf.deinit(allocator);
     const entries = try registry.openDir(".", .{ .iterate = true });
     var it = entries.iterate();
 
     while (try it.next()) |entry| {
-        try buf.append(try TmpDir.init(registryPath, entry.name));
+        try buf.append(allocator, try TmpDir.init(registryPath, entry.name));
     }
-    return buf.toOwnedSlice();
+    return try buf.toOwnedSlice(allocator);
 }

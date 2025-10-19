@@ -113,10 +113,10 @@ const Action = struct {
 };
 
 fn launch(allocator: std.mem.Allocator) !Action {
-    const tmpdirs = try pkgtmpdir.list();
+    const tmpdirs = try pkgtmpdir.list(allocator);
     defer {
         for (tmpdirs) |*td| td.deinit();
-        // allocator.free(tmpdirs);
+        allocator.free(tmpdirs);
     }
 
     var app = try vxfw.App.init(allocator);
