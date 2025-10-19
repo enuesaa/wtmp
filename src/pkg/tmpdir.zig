@@ -18,6 +18,17 @@ pub const TmpDir = struct {
     pub fn delete(self: *TmpDir) !void {
         try std.fs.deleteDirAbsolute(self.path);
     }
+
+    pub fn listFiles(self: *TmpDir, allocator: std.mem.Allocator) ![]u8 {
+        var buf = std.array_list.Managed([]const u8).init(allocator);
+
+        const entries = try std.fs.Dir.openDir(undefined, self.path, .{ .iterate = true });
+        var it = entries.iterate();
+        while (try it.next()) |entry| {
+            try buf.append(entry.name);
+        }
+        return try std.mem.join(allocator, "\n", buf.items[0..buf.items.len]);
+    }
 };
 
 fn getTmpDirPath(allocator: std.mem.Allocator) !TmpDir {
@@ -92,5 +103,5 @@ pub fn list() ![]TmpDir {
         const dirName = try allocator.dupe(u8, entry.name);
         try buf.append(TmpDir{ .path = path, .dirName = dirName });
     }
-    return buf.toOwnedSlice();
+    return try buf.toOwnedSlice();
 }

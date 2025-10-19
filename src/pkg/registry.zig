@@ -1,9 +1,11 @@
 const std = @import("std");
 
 fn getHomeDir(allocator: std.mem.Allocator) ![]const u8 {
-    const env = try std.process.getEnvMap(allocator);
+    var env = try std.process.getEnvMap(allocator);
+    defer env.deinit();
+
     if (env.get("HOME")) |home| {
-        return home;
+        return try allocator.dupe(u8, home);
     }
     return error.RuntimeError;
 }

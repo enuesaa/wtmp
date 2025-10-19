@@ -103,15 +103,7 @@ const Model = struct {
 
     fn buildFilesText(ptr: *anyopaque, ctx: vxfw.DrawContext) ![]u8 {
         const self: *Model = @ptrCast(@alignCast(ptr));
-        var buf = std.array_list.Managed([]const u8).init(ctx.arena);
-
-        const selectedPath = self.menu[self.selected].path;
-        const entries = try std.fs.Dir.openDir(undefined, selectedPath, .{ .iterate = true });
-        var it = entries.iterate();
-        while (try it.next()) |entry| {
-            try buf.append(entry.name);
-        }
-        return try std.mem.join(ctx.arena, "\n", buf.items[0..buf.items.len]);
+        return self.menu[self.selected].listFiles(ctx.arena);
     }
 };
 
