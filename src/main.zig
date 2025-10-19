@@ -3,9 +3,14 @@ const wtmp = @import("wtmp");
 const cli = @import("cli");
 
 pub fn main() !void {
-    const args = try std.process.argsAlloc(std.heap.page_allocator);
-    defer std.process.argsFree(std.heap.page_allocator, args);
+    var gpa = std.heap.GeneralPurposeAllocator(.{}){};
+    defer _ = gpa.deinit();
+    const allocator = gpa.allocator();
 
+    const args = try std.process.argsAlloc(allocator);
+    defer std.process.argsFree(allocator, args);
+
+    // start work-in-tmp
     // NOTE: first argument is the binary name like `wtmp`
     if (args.len == 1) {
         // create registry if not exist
@@ -15,7 +20,9 @@ pub fn main() !void {
         try wtmp.workInTmp();
         return;
     }
-    var r = try cli.AppRunner.init(std.heap.page_allocator);
+
+    // cli
+    var r = try cli.AppRunner.init(allocator);
 
     const app = cli.App{
         .command = cli.Command{

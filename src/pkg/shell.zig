@@ -1,7 +1,6 @@
 const std = @import("std");
 const pkgtmpdir = @import("tmpdir.zig");
 
-// TODO
 // How to override PS1
 // try envmap.put("ZDOTDIR", "/Users/aaa/tmp");
 // try envmap.put("PROMPT", "a");

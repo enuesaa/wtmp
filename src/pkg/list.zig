@@ -120,12 +120,8 @@ const Action = struct {
     selected: []const u8 = "",
 };
 
-fn launch() !Action {
+fn launch(allocator: std.mem.Allocator) !Action {
     const tmpdirs = try pkgtmpdir.list();
-
-    var gpa = std.heap.GeneralPurposeAllocator(.{}){};
-    defer _ = gpa.deinit();
-    const allocator = gpa.allocator();
 
     var app = try vxfw.App.init(allocator);
     defer app.deinit();
@@ -149,7 +145,11 @@ fn launch() !Action {
 }
 
 pub fn handle() !void {
-    const action = try launch();
+    var gpa = std.heap.GeneralPurposeAllocator(.{}){};
+    defer _ = gpa.deinit();
+    const allocator = gpa.allocator();
+
+    const action = try launch(allocator);
     std.debug.print("selected: {s}\n", .{action.selected});
 
     if (std.mem.eql(u8, action.name, "remove")) {
