@@ -23,6 +23,9 @@ pub fn main() !void {
     const app = cli.App{
         .command = cli.Command{
             .name = "wtmp",
+            .description = cli.Description{
+                .one_line = "A CLI tool to manage tmp dirs for throwaway work",
+            },
             .target = cli.CommandTarget{
                 .subcommands = try runner.allocCommands(&.{
                     cli.Command{
@@ -38,6 +41,9 @@ pub fn main() !void {
                     },
                 }),
             },
+        },
+        .help_config = cli.HelpConfig{
+            .color_usage = .never,
         },
     };
     return runner.run(&app);
