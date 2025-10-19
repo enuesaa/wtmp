@@ -13,26 +13,22 @@ pub fn main() !void {
     // start work-in-tmp
     // NOTE: first argument is the binary name like `wtmp`
     if (args.len == 1) {
-        // create registry if not exist
-        try wtmp.makeRegistry();
-
-        // create tmpdir, start shell
         try wtmp.workInTmp();
         return;
     }
 
     // cli
-    var r = try cli.AppRunner.init(allocator);
+    var runner = try cli.AppRunner.init(allocator);
 
     const app = cli.App{
         .command = cli.Command{
             .name = "wtmp",
             .target = cli.CommandTarget{
-                .subcommands = try r.allocCommands(&.{
+                .subcommands = try runner.allocCommands(&.{
                     cli.Command{
                         .name = "ls",
                         .description = cli.Description{
-                            .one_line = "ls command",
+                            .one_line = "list tmp dirs",
                         },
                         .target = cli.CommandTarget{
                             .action = cli.CommandAction{
@@ -44,5 +40,5 @@ pub fn main() !void {
             },
         },
     };
-    return r.run(&app);
+    return runner.run(&app);
 }

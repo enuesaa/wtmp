@@ -3,11 +3,10 @@ const pkgtmpdir = @import("pkg/tmpdir.zig");
 const pkgshell = @import("pkg/shell.zig");
 const pkglist = @import("pkg/list.zig");
 
-pub fn makeRegistry() !void {
-    try pkgregistry.make();
-}
-
 pub fn workInTmp() !void {
+    // create registry if not exist
+    try pkgregistry.make();
+
     // create
     const tmpdir = try pkgtmpdir.make();
 

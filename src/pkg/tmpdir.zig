@@ -66,6 +66,7 @@ fn now(allocator: std.mem.Allocator) ![]u8 {
 
 pub fn make() !TmpDir {
     var gpa = std.heap.GeneralPurposeAllocator(.{}){};
+    defer _ = gpa.deinit();
     const allocator = gpa.allocator();
 
     var tmpdir = try getTmpDirPath(allocator);
@@ -76,6 +77,7 @@ pub fn make() !TmpDir {
 
 pub fn list() ![]TmpDir {
     var gpa = std.heap.GeneralPurposeAllocator(.{}){};
+    defer _ = gpa.deinit();
     const allocator = gpa.allocator();
 
     const registryPath = try pkgregistry.getRegistryPath(allocator);
