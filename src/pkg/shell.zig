@@ -12,9 +12,10 @@ fn startShell(allocator: std.mem.Allocator, workdir: std.fs.Dir) !void {
     var child = std.process.Child.init(argv, allocator);
     child.cwd_dir = workdir;
 
-    var envmap = try std.process.getEnvMap(allocator);
-    try envmap.put("AAA", "bbb");
-    child.env_map = &envmap;
+    var env = try std.process.getEnvMap(allocator);
+    try env.put("AAA", "bbb");
+    defer env.deinit();
+    child.env_map = &env;
 
     const term = try child.spawnAndWait();
     std.debug.print("exit code: {d}\n", .{term.Exited});

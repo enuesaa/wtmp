@@ -49,11 +49,16 @@ pub const TmpDir = struct {
 fn getTmpDirPath(allocator: std.mem.Allocator) !TmpDir {
     const registryPath = try pkgregistry.getRegistryPath(allocator);
     defer allocator.free(registryPath);
+    const nowtime = try now(allocator);
+    const randomString = try genRandomString(allocator);
+    defer allocator.free(nowtime);
+    defer allocator.free(randomString);
     const dirName = try std.fmt.allocPrint(
         allocator,
         "{s}-{s}",
-        .{ try now(allocator), try genRandomString(allocator) },
+        .{ nowtime, randomString },
     );
+    defer allocator.free(dirName);
     return try TmpDir.init(registryPath, dirName);
 }
 

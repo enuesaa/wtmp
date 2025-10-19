@@ -3,6 +3,9 @@ const pkgtmpdir = @import("pkg/tmpdir.zig");
 const pkgshell = @import("pkg/shell.zig");
 const pkglist = @import("pkg/list.zig");
 
+// NOTE:
+// Do not return values from functions in this file to normalize the interface and its memory allocation.
+
 pub fn workInTmp() !void {
     // create registry if not exist
     try pkgregistry.make();
