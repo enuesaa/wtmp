@@ -5,6 +5,9 @@ on:
     tags:
       - 'v*'
 
+permissions:
+  contents: write
+
 jobs:
   build:
     runs-on: ubuntu-latest
@@ -35,8 +38,6 @@ jobs:
           merge-multiple: true
           pattern: release-zig-out
           path: dist
-
-      - run: ls dist
 
       - run: |
           for dir in dist/*; do
