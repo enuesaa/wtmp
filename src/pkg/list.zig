@@ -115,7 +115,7 @@ const Model = struct {
 
 const Action = struct {
     name: []const u8 = "",
-    selected: []const u8 = "",
+    tmpdir: pkgtmpdir.TmpDir = undefined,
 };
 
 fn launch(allocator: std.mem.Allocator) !Action {
@@ -131,13 +131,13 @@ fn launch(allocator: std.mem.Allocator) !Action {
 
     return Action{
         .name = model.action,
-        .selected = model.menu[model.selected].path,
+        .tmpdir = model.menu[model.selected],
     };
 }
 
 pub fn handle(allocator: std.mem.Allocator) !void {
     const action = try launch(allocator);
-    std.debug.print("selected: {s}\n", .{action.selected});
+    std.debug.print("selected: {s}\n", .{action.tmpdir.path});
 
     if (std.mem.eql(u8, action.name, "remove")) {
         std.debug.print("remove!\n", .{});
