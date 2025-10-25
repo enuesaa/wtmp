@@ -28,5 +28,16 @@ pub fn list() !void {
     defer _ = gpa.deinit();
     const allocator = gpa.allocator();
 
-    try pkglist.handle(allocator);
+    const action = try pkglist.list(allocator);
+    var tmpdir = action.tmpdir;
+    std.debug.print("selected: {s}\n", .{tmpdir.path});
+
+    if (std.mem.eql(u8, action.name, "remove")) {
+        try tmpdir.delete();
+        return;
+    }
+    if (std.mem.eql(u8, action.name, "continue")) {
+        try pkgshell.start(tmpdir.path);
+        return;
+    }
 }

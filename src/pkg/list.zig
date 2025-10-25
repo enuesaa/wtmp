@@ -2,7 +2,6 @@ const std = @import("std");
 const vaxis = @import("vaxis");
 const vxfw = vaxis.vxfw;
 const pkgtmpdir = @import("tmpdir.zig");
-const pkgshell = @import("shell.zig");
 
 const Model = struct {
     header: vxfw.Text = .{ .text = "[Enter] Continue Working, [r] Remove, [q] Quit" },
@@ -114,12 +113,12 @@ const Model = struct {
     }
 };
 
-const Action = struct {
+pub const Action = struct {
     name: []const u8 = "",
     tmpdir: pkgtmpdir.TmpDir = undefined,
 };
 
-fn launch(allocator: std.mem.Allocator) !Action {
+pub fn list(allocator: std.mem.Allocator) !Action {
     const tmpdirs = try pkgtmpdir.list(allocator);
     defer allocator.free(tmpdirs);
     defer for (tmpdirs) |*td| td.deinit();
@@ -134,21 +133,4 @@ fn launch(allocator: std.mem.Allocator) !Action {
         .name = model.action,
         .tmpdir = model.menu[model.selected],
     };
-}
-
-pub fn handle(allocator: std.mem.Allocator) !void {
-    const action = try launch(allocator);
-    var tmpdir = action.tmpdir;
-    std.debug.print("selected: {s}\n", .{tmpdir.path});
-
-    if (std.mem.eql(u8, action.name, "remove")) {
-        std.debug.print("remove!\n", .{});
-        try tmpdir.delete();
-        return;
-    }
-    if (std.mem.eql(u8, action.name, "continue")) {
-        std.debug.print("continue!\n", .{});
-        try pkgshell.start(tmpdir.path);
-        return;
-    }
 }
