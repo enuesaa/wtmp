@@ -30,13 +30,17 @@ pub fn list() !void {
 
     const action = try pkglist.list(allocator);
     var tmpdir = action.tmpdir;
-    std.debug.print("selected: {s}\n", .{tmpdir.path});
 
+    if (std.mem.eql(u8, action.name, "")) {
+        return;
+    }
     if (std.mem.eql(u8, action.name, "remove")) {
+        std.debug.print("selected: {s}\n", .{tmpdir.path});
         try tmpdir.delete();
         return;
     }
     if (std.mem.eql(u8, action.name, "continue")) {
+        std.debug.print("selected: {s}\n", .{tmpdir.path});
         try pkgshell.start(tmpdir.path);
         return;
     }

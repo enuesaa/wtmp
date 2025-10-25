@@ -4,7 +4,7 @@ const vxfw = vaxis.vxfw;
 const pkgtmpdir = @import("tmpdir.zig");
 
 const Model = struct {
-    header: vxfw.Text = .{ .text = "[Enter] Continue Working, [r] Remove, [q] Quit" },
+    header: vxfw.Text = .{ .text = "[Enter] Start shell, [r] Remove, [q] Quit" },
     split: vxfw.SplitView = .{ .lhs = undefined, .rhs = undefined, .width = 22 },
     lhs: vxfw.Text = .{ .text = "", .text_align = .center },
     rhs: vxfw.Text = .{ .text = "" },
