@@ -1,5 +1,6 @@
 const std = @import("std");
 
+// see https://ziglang.org/learn/build-system/
 pub fn build(b: *std.Build) void {
     const target = b.standardTargetOptions(.{});
     const optimize = b.standardOptimizeOption(.{});
@@ -37,11 +38,11 @@ pub fn build(b: *std.Build) void {
     b.installArtifact(exe);
 
     // run
-    // see https://ziglang.org/learn/build-system/
-    const run_cmd = b.addRunArtifact(exe);
     const run_step = b.step("run", "Run the app");
+    const run_cmd = b.addRunArtifact(exe);
     run_step.dependOn(&run_cmd.step);
-    // run_cmd.step.dependOn(b.getInstallStep());
+    run_cmd.step.dependOn(b.getInstallStep());
+
     if (b.args) |args| {
         run_cmd.addArgs(args);
     }
