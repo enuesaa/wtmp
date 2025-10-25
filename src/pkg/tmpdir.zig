@@ -31,7 +31,7 @@ pub const TmpDir = struct {
     }
 
     pub fn delete(self: *TmpDir) !void {
-        try std.fs.deleteDirAbsolute(self.path);
+        try std.fs.deleteTreeAbsolute(self.path);
     }
 
     pub fn listFiles(self: *TmpDir) ![]u8 {
