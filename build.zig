@@ -21,6 +21,7 @@ pub fn build(b: *std.Build) void {
         .target = target,
         .imports = &.{
             .{ .name = "vaxis", .module = vaxis.module("vaxis") },
+            .{ .name = "cli", .module = zigcli.module("cli") },
         },
     });
     const exe = b.addExecutable(.{
@@ -31,7 +32,6 @@ pub fn build(b: *std.Build) void {
             .optimize = optimize,
             .imports = &.{
                 .{ .name = "wtmp", .module = mod },
-                .{ .name = "cli", .module = zigcli.module("cli") },
             },
         }),
     });
