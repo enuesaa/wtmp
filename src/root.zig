@@ -4,6 +4,7 @@ const pkgtmpdir = @import("pkg/tmpdir.zig");
 const pkgshell = @import("pkg/shell.zig");
 const pkglist = @import("pkg/list.zig");
 const cli = @import("cli");
+const config = @import("config");
 
 // NOTE:
 // Do not return values from functions in this file to normalize the interface and its memory allocation.
@@ -17,6 +18,7 @@ pub fn launchCLI() !void {
     var runner = try cli.AppRunner.init(allocator);
 
     const app = cli.App{
+        .version = config.version,
         .command = cli.Command{
             .name = "wtmp",
             .description = cli.Description{

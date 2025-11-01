@@ -24,6 +24,10 @@ pub fn build(b: *std.Build) void {
             .{ .name = "cli", .module = zigcli.module("cli") },
         },
     });
+    const options = b.addOptions();
+    options.addOption([]const u8, "version", "0.0.2");
+    mod.addOptions("config", options);
+
     const exe = b.addExecutable(.{
         .name = "wtmp",
         .root_module = b.createModule(.{
@@ -36,11 +40,6 @@ pub fn build(b: *std.Build) void {
         }),
     });
     b.installArtifact(exe);
-
-    const options = b.addOptions();
-    const version = b.option([]const u8, "version", "application version string") orelse "0.0.0";
-    options.addOption([]const u8, "version", version);
-    exe.root_module.addOptions("config", options);
 
     // run
     const run_exe = b.addRunArtifact(exe);
