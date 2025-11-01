@@ -15,19 +15,19 @@ jobs:
       - uses: actions/checkout@v5
       - uses: mlugg/setup-zig@v2
 
-      - run: zig build -Dtarget=x86_64-macos --prefix-exe-dir x86_64-macos
-      - run: zig build -Dtarget=aarch64-macos --prefix-exe-dir aarch64-macos
-      - run: zig build -Dtarget=x86_64-linux-gnu --prefix-exe-dir x86_64-linux-gnu
-      - run: zig build -Dtarget=aarch64-linux-gnu --prefix-exe-dir aarch64-linux-gnu
+      - run: zig build -Dtarget=x86_64-macos --prefix-exe-dir wtmp-${{ github.ref_name }}-x86_64-apple-darwin
+      - run: zig build -Dtarget=aarch64-macos --prefix-exe-dir wtmp-${{ github.ref_name }}-x86_64-apple-darwin
+      - run: zig build -Dtarget=x86_64-linux-gnu --prefix-exe-dir wtmp-${{ github.ref_name }}-x86_64-linux-gnu
+      - run: zig build -Dtarget=aarch64-linux-gnu --prefix-exe-dir wtmp-${{ github.ref_name }}-aarch64-linux-gnu
 
       - uses: actions/upload-artifact@v4
         with:
           name: release-zig-out
           path: |
-            ./zig-out/x86_64-macos
-            ./zig-out/aarch64-macos
-            ./zig-out/x86_64-linux-gnu
-            ./zig-out/aarch64-linux-gnu
+            ./zig-out/wtmp-${{ github.ref_name }}-x86_64-apple-darwin
+            ./zig-out/wtmp-${{ github.ref_name }}-x86_64-apple-darwin
+            ./zig-out/wtmp-${{ github.ref_name }}-x86_64-linux-gnu
+            ./zig-out/wtmp-${{ github.ref_name }}-aarch64-linux-gnu
 
   release:
     runs-on: ubuntu-latest
