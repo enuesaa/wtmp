@@ -37,6 +37,11 @@ pub fn build(b: *std.Build) void {
     });
     b.installArtifact(exe);
 
+    const options = b.addOptions();
+    const version = b.option([]const u8, "version", "application version string") orelse "0.0.0";
+    options.addOption([]const u8, "version", version);
+    exe.root_module.addOptions("config", options);
+
     // run
     const run_exe = b.addRunArtifact(exe);
     if (b.args) |args| {
