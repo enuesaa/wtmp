@@ -43,7 +43,8 @@ jobs:
           for dir in dist/*; do
             tar -czf dist/$(basename $dir).tar.gz -C $dir .
           done
-      - run: shasum -a 256 dist/*.tar.gz > dist/checksums.txt
+      - run: shasum -a 256 *.tar.gz > checksums.txt
+        working-directory: dist
 
       - run: |
           cat <<'EOF' | envsubst > release.md
