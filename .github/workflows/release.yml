@@ -53,4 +53,6 @@ jobs:
       - uses: softprops/action-gh-release@v2
         with:
           body_path: release.md
-          files: dist/*.tar.gz
+          files: |
+            dist/checksums.txt
+            dist/*.tar.gz
