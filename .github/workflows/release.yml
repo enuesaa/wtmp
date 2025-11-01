@@ -16,7 +16,7 @@ jobs:
       - uses: mlugg/setup-zig@v2
 
       - run: zig build -Dtarget=x86_64-macos --prefix-exe-dir wtmp-${{ github.ref_name }}-x86_64-apple-darwin
-      - run: zig build -Dtarget=aarch64-macos --prefix-exe-dir wtmp-${{ github.ref_name }}-x86_64-apple-darwin
+      - run: zig build -Dtarget=aarch64-macos --prefix-exe-dir wtmp-${{ github.ref_name }}-aarch64-apple-darwin
       - run: zig build -Dtarget=x86_64-linux-gnu --prefix-exe-dir wtmp-${{ github.ref_name }}-x86_64-linux-gnu
       - run: zig build -Dtarget=aarch64-linux-gnu --prefix-exe-dir wtmp-${{ github.ref_name }}-aarch64-linux-gnu
 
@@ -25,7 +25,7 @@ jobs:
           name: release-zig-out
           path: |
             ./zig-out/wtmp-${{ github.ref_name }}-x86_64-apple-darwin
-            ./zig-out/wtmp-${{ github.ref_name }}-x86_64-apple-darwin
+            ./zig-out/wtmp-${{ github.ref_name }}-aarch64-apple-darwin
             ./zig-out/wtmp-${{ github.ref_name }}-x86_64-linux-gnu
             ./zig-out/wtmp-${{ github.ref_name }}-aarch64-linux-gnu
 
