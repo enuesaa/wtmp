@@ -37,6 +37,17 @@ pub fn launchCLI() !void {
                             },
                         },
                     },
+                    cli.Command{
+                        .name = "pin",
+                        .description = cli.Description{
+                            .one_line = "pin session",
+                        },
+                        .target = cli.CommandTarget{
+                            .action = cli.CommandAction{
+                                .exec = pin,
+                            },
+                        },
+                    },
                 }),
             },
         },
@@ -85,3 +96,5 @@ pub fn list() !void {
         return;
     }
 }
+
+pub fn pin() !void {}

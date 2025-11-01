@@ -18,7 +18,10 @@ fn startShell(allocator: std.mem.Allocator, workdir: std.fs.Dir) !void {
     child.env_map = &env;
 
     const term = try child.spawnAndWait();
-    std.debug.print("exit code: {d}\n", .{term.Exited});
+    std.debug.print("exit: {d}\n", .{term.Exited});
+    std.debug.print("\n", .{});
+    std.debug.print("To pin this session:\n", .{});
+    std.debug.print("wtmp pin last\n", .{});
 }
 
 pub fn start(tmppath: []u8) !void {
