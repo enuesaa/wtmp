@@ -50,8 +50,6 @@ pub const TmpDir = struct {
     pub fn rename(self: *TmpDir, afterDirName: []const u8) !void {
         const allocator = self.arena.allocator();
         const afterPath = try std.fs.path.join(allocator, &.{ self.registryPath, afterDirName });
-        std.debug.print("rename: {s}\n", .{afterPath});
-
         try std.fs.renameAbsolute(self.path, afterPath);
 
         self.path = try allocator.dupe(u8, afterPath);

@@ -9,6 +9,11 @@ const config = @import("config");
 // NOTE:
 // Do not return values from functions in this file to normalize the interface and its memory allocation.
 
+var cliargs = struct {
+    pinFrom: []const u8 = undefined,
+    pinTo: []const u8 = undefined,
+}{};
+
 pub fn launchCLI() !void {
     var gpa = std.heap.GeneralPurposeAllocator(.{}){};
     defer _ = gpa.deinit();
@@ -44,6 +49,20 @@ pub fn launchCLI() !void {
                         },
                         .target = cli.CommandTarget{
                             .action = cli.CommandAction{
+                                .positional_args = cli.PositionalArgs{
+                                    .required = try runner.allocPositionalArgs(&.{
+                                        .{
+                                            .name = "FROM",
+                                            .help = "tmpdir name",
+                                            .value_ref = runner.mkRef(&cliargs.pinFrom),
+                                        },
+                                        .{
+                                            .name = "TO",
+                                            .help = "tmpdir name",
+                                            .value_ref = runner.mkRef(&cliargs.pinTo),
+                                        },
+                                    }),
+                                },
                                 .exec = pin,
                             },
                         },
@@ -102,15 +121,11 @@ pub fn pin() !void {
     defer _ = gpa.deinit();
     const allocator = gpa.allocator();
 
-    const from = "202510251849-ax52t";
-    const to = "aaa";
-    std.debug.print("{s} {s}\n", .{ from, to });
+    std.debug.print("pin {s} as {s}\n", .{ cliargs.pinFrom, cliargs.pinTo });
 
-    var tmpdir = pkgtmpdir.get(allocator, from) catch {
+    var tmpdir = pkgtmpdir.get(allocator, cliargs.pinFrom) catch {
         std.debug.print("tmpdir not found\n", .{});
         return;
     };
-    std.debug.print("tmpdirName: {s}\n", .{tmpdir.dirName});
-
-    try tmpdir.rename(to);
+    try tmpdir.rename(cliargs.pinTo);
 }
