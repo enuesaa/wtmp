@@ -74,7 +74,9 @@ pub fn launchCLI() !void {
             .color_usage = .never,
         },
     };
-    return runner.run(&app);
+    defer allocator.free(cliargs.pinFrom);
+    defer allocator.free(cliargs.pinTo);
+    try runner.run(&app);
 }
 
 pub fn workInTmp() !void {
