@@ -103,12 +103,14 @@ pub fn pin() !void {
     const allocator = gpa.allocator();
 
     const from = "202510251849-ax52t";
-    const to = "";
+    const to = "aaa";
     std.debug.print("{s} {s}\n", .{ from, to });
 
-    const tmpdir = pkgtmpdir.get(allocator, from) catch {
+    var tmpdir = pkgtmpdir.get(allocator, from) catch {
         std.debug.print("tmpdir not found\n", .{});
         return;
     };
     std.debug.print("tmpdirName: {s}\n", .{tmpdir.dirName});
+
+    try tmpdir.rename(to);
 }
