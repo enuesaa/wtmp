@@ -2,11 +2,11 @@
 A CLI tool to manage tmp dirs for throwaway work
 
 ## Feature plan
-wtmp でセッションをスタート。exit したら即座にアーカイブ
+ttm でセッションをスタート。exit したら即座にアーカイブ
 
 ```bash
 # start session
-wtmp
+ttm
 
 # exit
 exit
@@ -16,7 +16,7 @@ exit
 過去のセッションをリスト
 
 ```bash
-$ wtmp ls
+$ ttm ls
 
 [Enter] Start shell, [r] Remove, [q] Quit
 
@@ -34,7 +34,7 @@ $ wtmp ls
 
 ### pin
 ```bash
-wtmp pin last
+ttm pin last
 ```
 
 ## Commands

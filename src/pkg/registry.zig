@@ -13,7 +13,7 @@ fn getHomeDir(allocator: std.mem.Allocator) ![]const u8 {
 pub fn getRegistryPath(allocator: std.mem.Allocator) ![]u8 {
     const homedir = try getHomeDir(allocator);
     defer allocator.free(homedir);
-    return try std.fs.path.join(allocator, &.{ homedir, ".wtmp" });
+    return try std.fs.path.join(allocator, &.{ homedir, ".ttm" });
 }
 
 fn isRegistryExist(allocator: std.mem.Allocator) !bool {

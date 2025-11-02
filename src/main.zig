@@ -1,5 +1,5 @@
 const std = @import("std");
-const wtmp = @import("wtmp");
+const ttm = @import("ttm");
 
 pub fn main() !void {
     var gpa = std.heap.GeneralPurposeAllocator(.{}){};
@@ -9,10 +9,10 @@ pub fn main() !void {
     const args = try std.process.argsAlloc(allocator);
     defer std.process.argsFree(allocator, args);
 
-    // first argument is the binary name like `wtmp`
+    // first argument is the binary name like `ttm`
     if (args.len == 1) {
-        try wtmp.workInTmp();
+        try ttm.workInTmp();
         return;
     }
-    try wtmp.launchCLI();
+    try ttm.launchCLI();
 }

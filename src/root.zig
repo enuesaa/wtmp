@@ -25,7 +25,7 @@ pub fn launchCLI() !void {
     const app = cli.App{
         .version = config.version,
         .command = cli.Command{
-            .name = "wtmp",
+            .name = "ttm",
             .description = cli.Description{
                 .one_line = "A CLI tool to manage tmp dirs for throwaway work",
             },
@@ -94,7 +94,7 @@ pub fn workInTmp() !void {
     // start shell
     try pkgshell.start(tmpdir.path);
     std.debug.print("To pin this session:\n", .{});
-    std.debug.print("wtmp pin {s} <name>\n", .{tmpdir.dirName});
+    std.debug.print("ttm pin {s} <name>\n", .{tmpdir.dirName});
 }
 
 pub fn list() !void {

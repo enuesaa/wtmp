@@ -32,7 +32,7 @@ jobs:
       - run: tree zig-out
 
       # run
-      - run: ./zig-out/x86_64-linux-gnu/wtmp --help
+      - run: ./zig-out/x86_64-linux-gnu/ttm --help
 
       # upload
       - uses: actions/upload-artifact@v4
@@ -50,5 +50,5 @@ jobs:
           pattern: ci-zig-out
           path: ./zig-out/aarch64-macos
 
-      - run: chmod +x ./zig-out/aarch64-macos/wtmp
-      - run: ./zig-out/aarch64-macos/wtmp --help
+      - run: chmod +x ./zig-out/aarch64-macos/ttm
+      - run: ./zig-out/aarch64-macos/ttm --help

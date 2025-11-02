@@ -16,7 +16,7 @@ pub fn build(b: *std.Build) void {
     });
 
     // mod
-    const mod = b.addModule("wtmp", .{
+    const mod = b.addModule("ttm", .{
         .root_source_file = b.path("src/root.zig"),
         .target = target,
         .imports = &.{
@@ -29,13 +29,13 @@ pub fn build(b: *std.Build) void {
     mod.addOptions("config", options);
 
     const exe = b.addExecutable(.{
-        .name = "wtmp",
+        .name = "ttm",
         .root_module = b.createModule(.{
             .root_source_file = b.path("src/main.zig"),
             .target = target,
             .optimize = optimize,
             .imports = &.{
-                .{ .name = "wtmp", .module = mod },
+                .{ .name = "ttm", .module = mod },
             },
         }),
     });

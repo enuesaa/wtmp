@@ -4,7 +4,7 @@ const pkgtmpdir = @import("tmpdir.zig");
 // How to override PS1
 // try envmap.put("ZDOTDIR", "/Users/aaa/tmp");
 // try envmap.put("PROMPT", "a");
-// try envmap.put("PS1", "(wtmp)");
+// try envmap.put("PS1", "(ttm)");
 
 fn startShell(allocator: std.mem.Allocator, workdir: std.fs.Dir) !void {
     const argv = &[_][]const u8{"zsh"};

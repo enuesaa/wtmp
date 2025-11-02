@@ -1,7 +1,7 @@
 .{
-    .name = .wtmp,
+    .name = .ttm,
     .version = "0.0.2",
-    .fingerprint = 0x402e363288218a5,
+    .fingerprint = 0xd4e9b88929b7e884,
     .minimum_zig_version = "0.15.1",
     .dependencies = .{
         .cli = .{
