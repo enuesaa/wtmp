@@ -102,13 +102,13 @@ pub fn pin() !void {
     defer _ = gpa.deinit();
     const allocator = gpa.allocator();
 
-    const from = "aa";
+    const from = "202510251849-ax52t";
     const to = "";
     std.debug.print("{s} {s}\n", .{ from, to });
 
-    const tmpdir = try pkgtmpdir.get(allocator, from);
+    const tmpdir = pkgtmpdir.get(allocator, from) catch {
+        std.debug.print("tmpdir not found\n", .{});
+        return;
+    };
     std.debug.print("tmpdirName: {s}\n", .{tmpdir.dirName});
-
-    // 過去のディレクトリの取得
-    // mv ディレクトリ名
 }

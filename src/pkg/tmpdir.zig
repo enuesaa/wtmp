@@ -122,5 +122,9 @@ pub fn get(allocator: std.mem.Allocator, name: []const u8) !TmpDir {
     const registryPath = try pkgregistry.getRegistryPath(allocator);
     defer allocator.free(registryPath);
 
-    return try TmpDir.init(registryPath, name);
+    var tmpdir = try TmpDir.init(registryPath, name);
+    if (!tmpdir.isExist()) {
+        return error.RuntimeError;
+    }
+    return tmpdir;
 }
