@@ -20,6 +20,9 @@ fn startShell(allocator: std.mem.Allocator, workdir: std.fs.Dir) !void {
     const term = try child.spawnAndWait();
     std.debug.print("exit: {d}\n", .{term.Exited});
     std.debug.print("\n", .{});
+
+    // TODO: prompt archive or not.
+    // TODO: change name here.
 }
 
 pub fn start(tmppath: []u8) !void {

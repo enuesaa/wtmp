@@ -1,4 +1,4 @@
-# wtmp
+# ttm
 A CLI tool to manage tmp dirs for throwaway work
 
 ## Feature plan
@@ -25,6 +25,7 @@ $ wtmp ls
    202510191513-o7roe │
 ```
 
+- TUI だとステップが一つ多くなってコピペするとき不安になるとわかったので、普通に stdout へ出す
 - 今の時点ではすべてのユースケースを考慮しない
 - セッションが終わってもディレクトリを圧縮しない
 - 1週間後に削除する
