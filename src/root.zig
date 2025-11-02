@@ -93,6 +93,8 @@ pub fn workInTmp() !void {
 
     // start shell
     try pkgshell.start(tmpdir.path);
+    std.debug.print("To pin this session:\n", .{});
+    std.debug.print("wtmp pin {s} <name>\n", .{tmpdir.dirName});
 }
 
 pub fn list() !void {
@@ -122,7 +124,6 @@ pub fn pin() !void {
     var gpa = std.heap.GeneralPurposeAllocator(.{}){};
     defer _ = gpa.deinit();
     const allocator = gpa.allocator();
-
     std.debug.print("pin {s} as {s}\n", .{ cliargs.pinFrom, cliargs.pinTo });
 
     var tmpdir = pkgtmpdir.get(allocator, cliargs.pinFrom) catch {
