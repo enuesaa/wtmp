@@ -117,3 +117,10 @@ pub fn list(allocator: std.mem.Allocator) ![]TmpDir {
     }
     return try buf.toOwnedSlice(allocator);
 }
+
+pub fn get(allocator: std.mem.Allocator, name: []const u8) !TmpDir {
+    const registryPath = try pkgregistry.getRegistryPath(allocator);
+    defer allocator.free(registryPath);
+
+    return try TmpDir.init(registryPath, name);
+}

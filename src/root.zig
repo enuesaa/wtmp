@@ -97,4 +97,18 @@ pub fn list() !void {
     }
 }
 
-pub fn pin() !void {}
+pub fn pin() !void {
+    var gpa = std.heap.GeneralPurposeAllocator(.{}){};
+    defer _ = gpa.deinit();
+    const allocator = gpa.allocator();
+
+    const from = "aa";
+    const to = "";
+    std.debug.print("{s} {s}\n", .{ from, to });
+
+    const tmpdir = try pkgtmpdir.get(allocator, from);
+    std.debug.print("tmpdirName: {s}\n", .{tmpdir.dirName});
+
+    // 過去のディレクトリの取得
+    // mv ディレクトリ名
+}
