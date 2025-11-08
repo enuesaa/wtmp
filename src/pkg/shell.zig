@@ -18,6 +18,29 @@ fn startShell(allocator: std.mem.Allocator, workdir: std.fs.Dir) !void {
 
     // TODO: prompt archive or not.
     // TODO: change name here.
+    if (try askContinue()) {
+        std.debug.print("ok continue\n", .{});
+    } else {
+        std.debug.print("not continue\n", .{});
+    }
+}
+
+fn askContinue() !bool {
+    const stdout = std.fs.File.stdout();
+    const stdin = std.fs.File.stdin();
+
+    _ = try stdout.write("Proceed? (y/n): ");
+
+    var buf: [1]u8 = undefined;
+    const n = try stdin.read(&buf);
+
+    if (n == 0) {
+        return false;
+    }
+    if (buf[0] == 'y') {
+        return true;
+    }
+    return false;
 }
 
 pub fn start(tmppath: []u8) !void {
