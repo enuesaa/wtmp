@@ -18,23 +18,51 @@ fn startShell(allocator: std.mem.Allocator, workdir: std.fs.Dir) !void {
 
     // TODO: prompt archive or not.
     // TODO: change name here.
-    if (try askContinue()) {
-        std.debug.print("ok continue\n", .{});
-    } else {
-        std.debug.print("not continue\n", .{});
+    if (try askPin()) {
+        std.debug.print("ok pin this session\n", .{});
     }
+    const name = try askName(allocator);
+    defer allocator.free(name);
+    std.debug.print("name is {s}\n", .{name});
 }
 
-fn askContinue() !bool {
+fn askName(allocator: std.mem.Allocator) ![]const u8 {
+    const stdin = std.fs.File.stdin();
+
+    const defaultName = "aaa";
+    std.debug.print("Name? (default:{s}): ", .{defaultName});
+
+    var buf: [100]u8 = undefined;
+    var idx: usize = 0;
+
+    while (idx < buf.len) {
+        var b: [1]u8 = undefined;
+        const n = try stdin.read(&b);
+        if (n == 0 or b[0] == '\n') {
+            break;
+        }
+        buf[idx] = b[0];
+        idx += 1;
+    }
+    if (idx == 0) {
+        return defaultName;
+    }
+    return try allocator.dupe(u8, buf[0..idx]);
+}
+
+fn askPin() !bool {
     const stdout = std.fs.File.stdout();
     const stdin = std.fs.File.stdin();
 
-    _ = try stdout.write("Proceed? (y/n): ");
+    _ = try stdout.write("Pin? [y/n] (default:n): ");
 
     var buf: [1]u8 = undefined;
     const n = try stdin.read(&buf);
 
     if (n == 0) {
+        return false;
+    }
+    if (buf[0] == '\n') {
         return false;
     }
 
