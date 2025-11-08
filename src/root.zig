@@ -2,6 +2,7 @@ const std = @import("std");
 const pkgregistry = @import("pkg/registry.zig");
 const pkgtmpdir = @import("pkg/tmpdir.zig");
 const pkgshell = @import("pkg/shell.zig");
+const pkgpinprompt = @import("pkg/pinprompt.zig");
 const pkglist = @import("pkg/list.zig");
 const cli = @import("cli");
 const config = @import("config");
@@ -93,6 +94,7 @@ pub fn workInTmp() !void {
 
     // start shell
     try pkgshell.start(tmpdir.path);
+    try pkgpinprompt.startPinPrompt(allocator);
 }
 
 pub fn list() !void {
