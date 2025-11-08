@@ -2,7 +2,7 @@
     .name = .ttm,
     .version = "0.0.2",
     .fingerprint = 0xd4e9b88929b7e884,
-    .minimum_zig_version = "0.15.1",
+    .minimum_zig_version = "0.15.2",
     .dependencies = .{
         .cli = .{
             .url = "git+https://github.com/sam701/zig-cli?ref=zig-0.15#cb44aade25a3c1eddd8b6f990b50c2189442c1e2",
