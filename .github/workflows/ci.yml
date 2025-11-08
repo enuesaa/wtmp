@@ -52,9 +52,9 @@ jobs:
         with:
           merge-multiple: true
           pattern: ci-zig-out
-          path: ./zig-out/${{ matrix.path }}
+      
+      - run: tree
 
-      - working-directory: ./zig-out/${{ matrix.path }}
-        run: |
-          chmod +x ./ttm
-          ./ttm --help
+      - run: |
+          chmod +x ./zig-out/${{ matrix.path }}/ttm
+          ./zig-out/${{ matrix.path }}/ttm --help
