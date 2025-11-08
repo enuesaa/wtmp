@@ -27,7 +27,7 @@ pub fn workInTmp() !void {
 
     // start shell
     try pkgshell.start(tmpdir.path);
-    try pkgpinprompt.startPinPrompt(allocator);
+    try pkgpinprompt.startPinPrompt(allocator, tmpdir.dirName);
 }
 
 pub fn list() !void {

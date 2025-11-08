@@ -1,13 +1,20 @@
 const std = @import("std");
+const pkgtmpdir = @import("tmpdir.zig");
 
-pub fn startPinPrompt(allocator: std.mem.Allocator) !void {
+pub fn startPinPrompt(allocator: std.mem.Allocator, from: []u8) !void {
     const name = try askName(allocator);
     defer allocator.free(name);
-    std.debug.print("name is {s}\n", .{name});
 
-    if (!std.mem.eql(u8, name, "")) {
-        std.debug.print("pin this session\n", .{});
+    if (std.mem.eql(u8, name, "")) {
+        return;
     }
+    std.debug.print("pin {s} as {s}\n", .{ from, name });
+
+    var tmpdir = pkgtmpdir.get(allocator, from) catch {
+        std.debug.print("tmpdir not found\n", .{});
+        return;
+    };
+    try tmpdir.rename(name);
 }
 
 fn askName(allocator: std.mem.Allocator) ![]const u8 {
