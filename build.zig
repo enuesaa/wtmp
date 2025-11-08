@@ -21,12 +21,8 @@ pub fn build(b: *std.Build) void {
         .target = target,
         .imports = &.{
             .{ .name = "vaxis", .module = vaxis.module("vaxis") },
-            .{ .name = "cli", .module = zigcli.module("cli") },
         },
     });
-    const options = b.addOptions();
-    options.addOption([]const u8, "version", "0.0.2");
-    mod.addOptions("config", options);
 
     const exe = b.addExecutable(.{
         .name = "ttm",
@@ -36,9 +32,13 @@ pub fn build(b: *std.Build) void {
             .optimize = optimize,
             .imports = &.{
                 .{ .name = "ttm", .module = mod },
+                .{ .name = "cli", .module = zigcli.module("cli") },
             },
         }),
     });
+    const options = b.addOptions();
+    options.addOption([]const u8, "version", "0.0.2");
+    exe.root_module.addOptions("config", options);
     b.installArtifact(exe);
 
     // run
