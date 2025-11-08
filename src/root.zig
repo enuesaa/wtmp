@@ -23,6 +23,7 @@ pub fn workInTmp() !void {
 
     // create
     var tmpdir = try pkgtmpdir.make(allocator);
+    std.debug.print("* started: {s}\n", .{tmpdir.dirName});
     defer tmpdir.deinit();
 
     // start shell
@@ -42,12 +43,12 @@ pub fn list() !void {
         return;
     }
     if (std.mem.eql(u8, action.name, "remove")) {
-        std.debug.print("selected: {s}\n", .{tmpdir.path});
+        std.debug.print("* remove: {s}\n", .{tmpdir.dirName});
         try tmpdir.delete();
         return;
     }
     if (std.mem.eql(u8, action.name, "continue")) {
-        std.debug.print("selected: {s}\n", .{tmpdir.path});
+        std.debug.print("* continue: {s}\n", .{tmpdir.dirName});
         try pkgshell.start(tmpdir.path);
         return;
     }
@@ -57,7 +58,7 @@ pub fn pin() !void {
     var gpa = std.heap.GeneralPurposeAllocator(.{}){};
     defer _ = gpa.deinit();
     const allocator = gpa.allocator();
-    std.debug.print("pin {s} as {s}\n", .{ cliargs.pinFrom, cliargs.pinTo });
+    std.debug.print("* pin {s} as {s}\n", .{ cliargs.pinFrom, cliargs.pinTo });
 
     var tmpdir = pkgtmpdir.get(allocator, cliargs.pinFrom) catch {
         std.debug.print("tmpdir not found\n", .{});

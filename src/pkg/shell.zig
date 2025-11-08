@@ -12,9 +12,7 @@ fn startShell(allocator: std.mem.Allocator, workdir: std.fs.Dir) !void {
     defer env.deinit();
     child.env_map = &env;
 
-    const term = try child.spawnAndWait();
-    std.debug.print("exit: {d}\n", .{term.Exited});
-    std.debug.print("\n", .{});
+    _ = try child.spawnAndWait();
 }
 
 pub fn start(tmppath: []u8) !void {

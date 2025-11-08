@@ -8,7 +8,7 @@ pub fn startPinPrompt(allocator: std.mem.Allocator, from: []u8) !void {
     if (std.mem.eql(u8, name, "")) {
         return;
     }
-    std.debug.print("pin {s} as {s}\n", .{ from, name });
+    std.debug.print("* pin this session as {s}\n", .{name});
 
     var tmpdir = pkgtmpdir.get(allocator, from) catch {
         std.debug.print("tmpdir not found\n", .{});

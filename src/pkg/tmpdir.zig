@@ -25,7 +25,6 @@ pub const TmpDir = struct {
     pub fn make(self: *TmpDir) !void {
         // see https://stackoverflow.com/questions/72709702/how-do-i-get-the-full-path-of-a-std-fs-dir
         try std.fs.makeDirAbsolute(self.path);
-        std.debug.print("created: {s}\n", .{self.path});
     }
 
     pub fn isExist(self: *TmpDir) bool {
