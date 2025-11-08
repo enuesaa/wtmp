@@ -2,6 +2,13 @@ const std = @import("std");
 const pkgtmpdir = @import("tmpdir.zig");
 
 pub fn startPinPrompt(allocator: std.mem.Allocator, from: []u8) !void {
+    std.debug.print("*********************************************\n", .{});
+    std.debug.print("* Session ended\n", .{});
+    std.debug.print("* \n", .{});
+    std.debug.print("* To pin this session, please provide a name,\n", .{});
+    std.debug.print("* otherwise the session will be archived\n", .{});
+    std.debug.print("*********************************************\n", .{});
+
     const name = try askName(allocator);
     defer allocator.free(name);
 
@@ -40,31 +47,3 @@ fn askName(allocator: std.mem.Allocator) ![]const u8 {
     }
     return try allocator.dupe(u8, buf[0..idx]);
 }
-
-// fn askPin() !bool {
-//     const stdout = std.fs.File.stdout();
-//     const stdin = std.fs.File.stdin();
-
-//     _ = try stdout.write("Pin? [y/n] (default:n): ");
-
-//     var buf: [1]u8 = undefined;
-//     const n = try stdin.read(&buf);
-
-//     if (n == 0) {
-//         return false;
-//     }
-//     if (buf[0] == '\n') {
-//         return false;
-//     }
-
-//     // discard the input of `Enter` after `y` or `n`
-//     var discard: [1]u8 = undefined;
-//     while (true) {
-//         const k = try stdin.read(&discard);
-//         if (k == 0 or discard[0] == '\n') break;
-//     }
-//     if (buf[0] == 'y') {
-//         return true;
-//     }
-//     return false;
-// }
