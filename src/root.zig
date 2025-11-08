@@ -93,8 +93,6 @@ pub fn workInTmp() !void {
 
     // start shell
     try pkgshell.start(tmpdir.path);
-    std.debug.print("To pin this session:\n", .{});
-    std.debug.print("ttm pin {s} <name>\n", .{tmpdir.dirName});
 }
 
 pub fn list() !void {

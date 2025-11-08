@@ -16,21 +16,20 @@ fn startShell(allocator: std.mem.Allocator, workdir: std.fs.Dir) !void {
     std.debug.print("exit: {d}\n", .{term.Exited});
     std.debug.print("\n", .{});
 
-    // TODO: prompt archive or not.
-    // TODO: change name here.
-    if (try askPin()) {
-        std.debug.print("ok pin this session\n", .{});
-    }
     const name = try askName(allocator);
     defer allocator.free(name);
     std.debug.print("name is {s}\n", .{name});
+
+    if (!std.mem.eql(u8, name, "")) {
+        std.debug.print("pin this session\n", .{});
+    }
 }
 
 fn askName(allocator: std.mem.Allocator) ![]const u8 {
     const stdin = std.fs.File.stdin();
 
-    const defaultName = "aaa";
-    std.debug.print("Name? (default:{s}): ", .{defaultName});
+    const defaultName = "";
+    std.debug.print("? Name: ", .{});
 
     var buf: [100]u8 = undefined;
     var idx: usize = 0;
@@ -50,33 +49,33 @@ fn askName(allocator: std.mem.Allocator) ![]const u8 {
     return try allocator.dupe(u8, buf[0..idx]);
 }
 
-fn askPin() !bool {
-    const stdout = std.fs.File.stdout();
-    const stdin = std.fs.File.stdin();
+// fn askPin() !bool {
+//     const stdout = std.fs.File.stdout();
+//     const stdin = std.fs.File.stdin();
 
-    _ = try stdout.write("Pin? [y/n] (default:n): ");
+//     _ = try stdout.write("Pin? [y/n] (default:n): ");
 
-    var buf: [1]u8 = undefined;
-    const n = try stdin.read(&buf);
+//     var buf: [1]u8 = undefined;
+//     const n = try stdin.read(&buf);
 
-    if (n == 0) {
-        return false;
-    }
-    if (buf[0] == '\n') {
-        return false;
-    }
+//     if (n == 0) {
+//         return false;
+//     }
+//     if (buf[0] == '\n') {
+//         return false;
+//     }
 
-    // discard the input of `Enter` after `y` or `n`
-    var discard: [1]u8 = undefined;
-    while (true) {
-        const k = try stdin.read(&discard);
-        if (k == 0 or discard[0] == '\n') break;
-    }
-    if (buf[0] == 'y') {
-        return true;
-    }
-    return false;
-}
+//     // discard the input of `Enter` after `y` or `n`
+//     var discard: [1]u8 = undefined;
+//     while (true) {
+//         const k = try stdin.read(&discard);
+//         if (k == 0 or discard[0] == '\n') break;
+//     }
+//     if (buf[0] == 'y') {
+//         return true;
+//     }
+//     return false;
+// }
 
 pub fn start(tmppath: []u8) !void {
     var gpa = std.heap.GeneralPurposeAllocator(.{}){};
