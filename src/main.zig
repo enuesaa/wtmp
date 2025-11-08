@@ -19,11 +19,6 @@ pub fn main() !void {
     try launchCLI();
 }
 
-var cliargs = struct {
-    pinFrom: []const u8 = undefined,
-    pinTo: []const u8 = undefined,
-}{};
-
 pub fn launchCLI() !void {
     var gpa = std.heap.GeneralPurposeAllocator(.{}){};
     defer _ = gpa.deinit();
@@ -64,16 +59,16 @@ pub fn launchCLI() !void {
                                         .{
                                             .name = "FROM",
                                             .help = "tmpdir name",
-                                            .value_ref = runner.mkRef(&cliargs.pinFrom),
+                                            .value_ref = runner.mkRef(&ttm.cliargs.pinFrom),
                                         },
                                         .{
                                             .name = "TO",
                                             .help = "tmpdir name",
-                                            .value_ref = runner.mkRef(&cliargs.pinTo),
+                                            .value_ref = runner.mkRef(&ttm.cliargs.pinTo),
                                         },
                                     }),
                                 },
-                                .exec = pin,
+                                .exec = ttm.pin,
                             },
                         },
                     },
@@ -84,11 +79,7 @@ pub fn launchCLI() !void {
             .color_usage = .never,
         },
     };
-    defer allocator.free(cliargs.pinFrom);
-    defer allocator.free(cliargs.pinTo);
+    defer allocator.free(ttm.cliargs.pinFrom);
+    defer allocator.free(ttm.cliargs.pinTo);
     try runner.run(&app);
-}
-
-fn pin() !void {
-    try ttm.pin(cliargs.pinFrom, cliargs.pinTo);
 }

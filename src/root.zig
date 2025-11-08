@@ -8,6 +8,11 @@ const pkglist = @import("pkg/list.zig");
 // NOTE:
 // Do not return values from functions in this file to normalize the interface and its memory allocation.
 
+pub var cliargs = struct {
+    pinFrom: []const u8 = undefined,
+    pinTo: []const u8 = undefined,
+}{};
+
 pub fn workInTmp() !void {
     var gpa = std.heap.GeneralPurposeAllocator(.{}){};
     defer _ = gpa.deinit();
@@ -48,15 +53,15 @@ pub fn list() !void {
     }
 }
 
-pub fn pin(pinFrom: []const u8, pinTo: []const u8) !void {
+pub fn pin() !void {
     var gpa = std.heap.GeneralPurposeAllocator(.{}){};
     defer _ = gpa.deinit();
     const allocator = gpa.allocator();
-    std.debug.print("pin {s} as {s}\n", .{ pinFrom, pinTo });
+    std.debug.print("pin {s} as {s}\n", .{ cliargs.pinFrom, cliargs.pinTo });
 
-    var tmpdir = pkgtmpdir.get(allocator, pinFrom) catch {
+    var tmpdir = pkgtmpdir.get(allocator, cliargs.pinFrom) catch {
         std.debug.print("tmpdir not found\n", .{});
         return;
     };
-    try tmpdir.rename(pinTo);
+    try tmpdir.rename(cliargs.pinTo);
 }
