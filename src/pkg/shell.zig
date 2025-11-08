@@ -37,6 +37,13 @@ fn askContinue() !bool {
     if (n == 0) {
         return false;
     }
+
+    // discard the input of `Enter` after `y` or `n`
+    var discard: [1]u8 = undefined;
+    while (true) {
+        const k = try stdin.read(&discard);
+        if (k == 0 or discard[0] == '\n') break;
+    }
     if (buf[0] == 'y') {
         return true;
     }
