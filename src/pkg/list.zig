@@ -4,7 +4,7 @@ const vxfw = vaxis.vxfw;
 const pkgtmpdir = @import("tmpdir.zig");
 
 const Model = struct {
-    header: vxfw.Text = .{ .text = "[Enter] Start shell, [r] Remove, [q] Quit" },
+    header: vxfw.Text = .{ .text = "[q] Quit, [Enter] Start shell" },
     split: vxfw.SplitView = .{ .lhs = undefined, .rhs = undefined, .width = 22 },
     lhs: vxfw.Text = .{ .text = "", .text_align = .center },
     rhs: vxfw.Text = .{ .text = "" },
@@ -40,11 +40,6 @@ const Model = struct {
                 }
                 if (key.codepoint == vaxis.Key.enter) {
                     self.action = "continue";
-                    ctx.quit = true;
-                    return;
-                }
-                if (key.matches('r', .{})) {
-                    self.action = "remove";
                     ctx.quit = true;
                     return;
                 }
