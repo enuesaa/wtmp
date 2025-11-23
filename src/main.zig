@@ -48,20 +48,9 @@ pub fn launchCLI() !void {
                         },
                     },
                     cli.Command{
-                        .name = "exec",
-                        .description = cli.Description{
-                            .one_line = "exec tmp dirs",
-                        },
-                        .target = cli.CommandTarget{
-                            .action = cli.CommandAction{
-                                .exec = ttm.exec,
-                            },
-                        },
-                    },
-                    cli.Command{
                         .name = "x",
                         .description = cli.Description{
-                            .one_line = "exec tmp dirs (alias of exec)",
+                            .one_line = "exec in tmp dir",
                         },
                         .target = cli.CommandTarget{
                             .action = cli.CommandAction{
@@ -72,7 +61,7 @@ pub fn launchCLI() !void {
                     cli.Command{
                         .name = "pin",
                         .description = cli.Description{
-                            .one_line = "pin session",
+                            .one_line = "rename and keep tmp dir",
                         },
                         .target = cli.CommandTarget{
                             .action = cli.CommandAction{
