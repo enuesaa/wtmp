@@ -58,17 +58,26 @@ pub fn launchCLI() !void {
                             },
                         },
                     },
-                    // cli.Command{
-                    //     .name = "rm",
-                    //     .description = cli.Description{
-                    //         .one_line = "remove tmp dir",
-                    //     },
-                    //     .target = cli.CommandTarget{
-                    //         .action = cli.CommandAction{
-                    //             .exec = ttm.list,
-                    //         },
-                    //     },
-                    // },
+                    cli.Command{
+                        .name = "rm",
+                        .description = cli.Description{
+                            .one_line = "remove tmp dir",
+                        },
+                        .target = cli.CommandTarget{
+                            .action = cli.CommandAction{
+                                .positional_args = cli.PositionalArgs{
+                                    .required = try runner.allocPositionalArgs(&.{
+                                        .{
+                                            .name = "REMOVE",
+                                            .help = "tmpdir name",
+                                            .value_ref = runner.mkRef(&ttm.cliargs.removeDir),
+                                        },
+                                    }),
+                                },
+                                .exec = ttm.remove,
+                            },
+                        },
+                    },
                     cli.Command{
                         .name = "pin",
                         .description = cli.Description{
@@ -101,6 +110,7 @@ pub fn launchCLI() !void {
             .color_usage = .never,
         },
     };
+    defer allocator.free(ttm.cliargs.removeDir);
     defer allocator.free(ttm.cliargs.pinFrom);
     defer allocator.free(ttm.cliargs.pinTo);
     try runner.run(&app);

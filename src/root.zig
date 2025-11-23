@@ -10,6 +10,7 @@ const pkglist = @import("pkg/list.zig");
 // Do not return values from functions in this file to normalize the interface and its memory allocation.
 
 pub var cliargs = struct {
+    removeDir: []const u8 = undefined,
     pinFrom: []const u8 = undefined,
     pinTo: []const u8 = undefined,
 }{};
@@ -57,6 +58,18 @@ pub fn list() !void {
     const allocator = gpa.allocator();
 
     try pkglist.list(allocator);
+}
+
+pub fn remove() !void {
+    var gpa = std.heap.GeneralPurposeAllocator(.{}){};
+    defer _ = gpa.deinit();
+    const allocator = gpa.allocator();
+
+    var tmpdir = pkgtmpdir.get(allocator, cliargs.removeDir) catch {
+        std.debug.print("tmpdir not found\n", .{});
+        return;
+    };
+    try tmpdir.delete();
 }
 
 pub fn pin() !void {
