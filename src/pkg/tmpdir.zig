@@ -54,6 +54,21 @@ pub const TmpDir = struct {
         self.path = try allocator.dupe(u8, afterPath);
         self.dirName = try allocator.dupe(u8, afterDirName);
     }
+
+    pub fn isArchived(self: *TmpDir) bool {
+        if (self.dirName.len < 18) {
+            return false;
+        }
+        for (self.dirName[0..12]) |c| {
+            if (c < '0' or c > '9') {
+                return false;
+            }
+        }
+        if (self.dirName[12] != '-') {
+            return false;
+        }
+        return true;
+    }
 };
 
 fn getTmpDirPath(allocator: std.mem.Allocator) !TmpDir {

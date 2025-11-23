@@ -39,7 +39,7 @@ pub fn exec() !void {
     const allocator = gpa.allocator();
 
     const action = try pkgexec.exec(allocator);
-    const tmpdir = action.tmpdir;
+    var tmpdir = action.tmpdir;
 
     if (std.mem.eql(u8, action.name, "")) {
         return;
@@ -47,7 +47,9 @@ pub fn exec() !void {
     if (std.mem.eql(u8, action.name, "continue")) {
         std.debug.print("* continue: {s}\n", .{tmpdir.dirName});
         try pkgshell.start(tmpdir.path);
-        try pkgpinprompt.startPinPrompt(allocator, tmpdir.dirName);
+        if (tmpdir.isArchived()) {
+            try pkgpinprompt.startPinPrompt(allocator, tmpdir.dirName);
+        }
         return;
     }
 }
