@@ -50,6 +50,7 @@ pub fn list() !void {
     if (std.mem.eql(u8, action.name, "continue")) {
         std.debug.print("* continue: {s}\n", .{tmpdir.dirName});
         try pkgshell.start(tmpdir.path);
+        try pkgpinprompt.startPinPrompt(allocator, tmpdir.dirName);
         return;
     }
 }

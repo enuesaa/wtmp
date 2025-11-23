@@ -3,7 +3,7 @@ const pkgtmpdir = @import("tmpdir.zig");
 
 pub fn startPinPrompt(allocator: std.mem.Allocator, from: []u8) !void {
     std.debug.print("*********************************************\n", .{});
-    std.debug.print("* Session ended\n", .{});
+    std.debug.print("* Session name\n", .{});
     std.debug.print("* \n", .{});
     std.debug.print("* To pin this session, please provide a name,\n", .{});
     std.debug.print("* otherwise the session will be archived\n", .{});
