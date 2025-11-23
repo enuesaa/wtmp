@@ -16,7 +16,7 @@ exit
 ```bash
 ➜ ttm --help
 ttm
-Version: 0.0.3
+Version: 0.0.4
 
 USAGE:
   ttm [OPTIONS]
