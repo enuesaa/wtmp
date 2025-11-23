@@ -16,7 +16,7 @@ pub fn getRegistryPath(allocator: std.mem.Allocator) ![]u8 {
     return try std.fs.path.join(allocator, &.{ homedir, ".ttm" });
 }
 
-fn isRegistryExist(allocator: std.mem.Allocator) !bool {
+pub fn isRegistryExist(allocator: std.mem.Allocator) !bool {
     const registry = try getRegistryPath(allocator);
     defer allocator.free(registry);
     return if (std.fs.accessAbsolute(registry, .{})) |_| true else |_| false;
