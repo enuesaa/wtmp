@@ -47,17 +47,17 @@ pub fn launchCLI() !void {
                             },
                         },
                     },
-                    // cli.Command{
-                    //     .name = "exec",
-                    //     .description = cli.Description{
-                    //         .one_line = "exec tmp dirs",
-                    //     },
-                    //     .target = cli.CommandTarget{
-                    //         .action = cli.CommandAction{
-                    //             .exec = ttm.list,
-                    //         },
-                    //     },
-                    // },
+                    cli.Command{
+                        .name = "exec",
+                        .description = cli.Description{
+                            .one_line = "exec tmp dirs",
+                        },
+                        .target = cli.CommandTarget{
+                            .action = cli.CommandAction{
+                                .exec = ttm.exec,
+                            },
+                        },
+                    },
                     // cli.Command{
                     //     .name = "rm",
                     //     .description = cli.Description{
