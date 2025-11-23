@@ -59,22 +59,13 @@ pub fn launchCLI() !void {
                         },
                     },
                     cli.Command{
-                        .name = "rm",
+                        .name = "x",
                         .description = cli.Description{
-                            .one_line = "remove tmp dir",
+                            .one_line = "exec tmp dirs (alias of exec)",
                         },
                         .target = cli.CommandTarget{
                             .action = cli.CommandAction{
-                                .positional_args = cli.PositionalArgs{
-                                    .required = try runner.allocPositionalArgs(&.{
-                                        .{
-                                            .name = "REMOVE",
-                                            .help = "tmpdir name",
-                                            .value_ref = runner.mkRef(&ttm.cliargs.removeDir),
-                                        },
-                                    }),
-                                },
-                                .exec = ttm.remove,
+                                .exec = ttm.exec,
                             },
                         },
                     },
@@ -100,6 +91,37 @@ pub fn launchCLI() !void {
                                     }),
                                 },
                                 .exec = ttm.pin,
+                            },
+                        },
+                    },
+                    cli.Command{
+                        .name = "rm",
+                        .description = cli.Description{
+                            .one_line = "remove tmp dir",
+                        },
+                        .target = cli.CommandTarget{
+                            .action = cli.CommandAction{
+                                .positional_args = cli.PositionalArgs{
+                                    .required = try runner.allocPositionalArgs(&.{
+                                        .{
+                                            .name = "REMOVE",
+                                            .help = "tmpdir name",
+                                            .value_ref = runner.mkRef(&ttm.cliargs.removeDir),
+                                        },
+                                    }),
+                                },
+                                .exec = ttm.remove,
+                            },
+                        },
+                    },
+                    cli.Command{
+                        .name = "prune",
+                        .description = cli.Description{
+                            .one_line = "remove archived tmp dirs",
+                        },
+                        .target = cli.CommandTarget{
+                            .action = cli.CommandAction{
+                                .exec = ttm.prune,
                             },
                         },
                     },

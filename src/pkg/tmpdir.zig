@@ -10,6 +10,9 @@ pub const TmpDir = struct {
     pub fn init(registryPath: []const u8, dirName: []const u8) !TmpDir {
         var arena = std.heap.ArenaAllocator.init(std.heap.page_allocator);
         const allocator = arena.allocator();
+        if (std.mem.eql(u8, dirName, "")) {
+            return error.RuntimeError;
+        }
         return TmpDir{
             .arena = arena,
             .registryPath = try allocator.dupe(u8, registryPath),

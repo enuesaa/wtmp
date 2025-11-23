@@ -5,6 +5,7 @@ const pkgshell = @import("pkg/shell.zig");
 const pkgpinprompt = @import("pkg/pinprompt.zig");
 const pkgexec = @import("pkg/exec.zig");
 const pkglist = @import("pkg/list.zig");
+const pkgprune = @import("pkg/prune.zig");
 
 // NOTE:
 // Do not return values from functions in this file to normalize the interface and its memory allocation.
@@ -72,6 +73,14 @@ pub fn remove() !void {
         return;
     };
     try tmpdir.delete();
+}
+
+pub fn prune() !void {
+    var gpa = std.heap.GeneralPurposeAllocator(.{}){};
+    defer _ = gpa.deinit();
+    const allocator = gpa.allocator();
+
+    try pkgprune.prune(allocator);
 }
 
 pub fn pin() !void {

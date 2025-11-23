@@ -3,10 +3,8 @@ const pkgtmpdir = @import("tmpdir.zig");
 
 pub fn startPinPrompt(allocator: std.mem.Allocator, from: []u8) !void {
     std.debug.print("*********************************************\n", .{});
-    std.debug.print("* Session name\n", .{});
-    std.debug.print("* \n", .{});
-    std.debug.print("* To pin this session, please provide a name,\n", .{});
-    std.debug.print("* otherwise the session will be archived\n", .{});
+    std.debug.print("* Please provide a name,\n", .{});
+    std.debug.print("* otherwise the session will be archived.\n", .{});
     std.debug.print("*********************************************\n", .{});
 
     const name = try askName(allocator);
@@ -15,8 +13,6 @@ pub fn startPinPrompt(allocator: std.mem.Allocator, from: []u8) !void {
     if (std.mem.eql(u8, name, "")) {
         return;
     }
-    std.debug.print("* pin this session as {s}\n", .{name});
-
     var tmpdir = pkgtmpdir.get(allocator, from) catch {
         std.debug.print("tmpdir not found\n", .{});
         return;
