@@ -1,17 +1,6 @@
 # ttm
 A CLI tool to manage tmp dirs for throwaway work
 
-## Feature plan
-ttm でセッションをスタート。exit したら即座にアーカイブ
-
-```bash
-# start session
-ttm
-
-# exit
-exit
-```
-
 ## Commands
 ```bash
 ➜ ttm --help
@@ -35,7 +24,18 @@ OPTIONS:
       --color <VALUE>   When to use colors (*auto*, never, always).
 ```
 
-### ls
+### ttm
+ttm でセッションをスタート。exit したら即座にアーカイブ
+
+```bash
+# start session
+ttm
+
+# exit
+exit
+```
+
+### ttm ls
 過去のセッションをリスト
 
 ```bash
@@ -50,7 +50,7 @@ $ ttm ls
 - 今の時点ではすべてのユースケースを考慮しない
 - セッションが終わってもディレクトリを圧縮しない
 
-### pin
+### ttm pin
 ```bash
 ttm pin last
 ```
@@ -60,3 +60,6 @@ ttm pin last
 zig build run
 zig build test
 ```
+
+## Feature Plans
+- 履歴を取りたい
