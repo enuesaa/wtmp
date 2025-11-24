@@ -63,3 +63,4 @@ zig build test
 
 ## Feature Plans
 - 履歴を取りたい
+- mac には sandbox-exec というコマンドがあり、ネットワークや書き込みを制限できるらしい
