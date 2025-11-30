@@ -64,3 +64,10 @@ zig build test
 ## Feature Plans
 - 履歴を取りたい
 - mac には sandbox-exec というコマンドがあり、ネットワークや書き込みを制限できるらしい
+
+```zsh
+preexec() {
+  local fmt_date="$(date +'%Y-%m-%d.%H:%M:%S')"
+  echo "${fmt_date} \"${PWD}\" $1" >> ~/.config/zsh-full-$(date +'%Y-%m-%d').log
+}
+```
